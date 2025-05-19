@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 765674b3bb754bc8b0fdf6901223fabc, type: 3}
+  m_Name: ItemTable
+  m_EditorClassIdentifier: 
+  data:
+  - {fileID: 11400000, guid: 9a2e66154880fb646b187b9dd8081781, type: 2}
+  - {fileID: 11400000, guid: 1da306fd90a25f747b888d0927613633, type: 2}
+  - {fileID: 11400000, guid: dff055b033c7af1468ac73013d33a92e, type: 2}
+  - {fileID: 11400000, guid: 7f2b098377685964f99f5a2845c5358a, type: 2}
+  dataDictionary:
+    _serializedList:
+    - Key: Apple
+      Value: {fileID: 11400000, guid: 9a2e66154880fb646b187b9dd8081781, type: 2}
+    - Key: Garlic
+      Value: {fileID: 11400000, guid: 1da306fd90a25f747b888d0927613633, type: 2}
+    - Key: Carrot
+      Value: {fileID: 11400000, guid: dff055b033c7af1468ac73013d33a92e, type: 2}
+    - Key: Coffee
+      Value: {fileID: 11400000, guid: 7f2b098377685964f99f5a2845c5358a, type: 2}

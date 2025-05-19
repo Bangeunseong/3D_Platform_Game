@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2c242d4897f43b0babee8f4ec817483, type: 3}
+  m_Name: Apple
+  m_EditorClassIdentifier: 
+  itemName: Apple
+  description: Recovers health
+  icon: {fileID: 0}
+  itemPrefab: {fileID: 6606647879154471315, guid: 5d93a260708027b4ab23c9c1cbe9c59a, type: 3}
+  maxStackCount: 12
+  consumables:
+  - type: 0
+    value: 25
+    duration: 0

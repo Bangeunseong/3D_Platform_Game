@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2c242d4897f43b0babee8f4ec817483, type: 3}
+  m_Name: Coffee
+  m_EditorClassIdentifier: 
+  itemName: Coffee
+  description: Infinite stamina for 10 seconds
+  icon: {fileID: 0}
+  itemPrefab: {fileID: 6869508658388287760, guid: e2c1ccd356f499d48baaef21f41809c2, type: 3}
+  maxStackCount: 12
+  consumables:
+  - type: 2
+    value: 0
+    duration: 10
