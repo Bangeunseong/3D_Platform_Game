@@ -1,4 +1,3 @@
-using System;
 using UI;
 using UnityEngine;
 using Utils.Common;
@@ -70,31 +69,53 @@ namespace Manager
             ChangeUIState(Enums.UIState.GameOver);
         }
 
+        /// <summary>
+        /// Update HpBar in GameUI
+        /// </summary>
+        /// <param name="currentHp"></param>
         public void ChangeHpBar(float currentHp)
         {
             gameUI.SetHpBar(currentHp);
         }
 
+        /// <summary>
+        /// Update StaminaBar in GameUI
+        /// </summary>
+        /// <param name="currentStamina"></param>
         public void ChangeStaminaBar(float currentStamina)
         {
             gameUI.SetStaminaBar(currentStamina);
         }
 
+        /// <summary>
+        /// Update PromptText in GameUI
+        /// </summary>
+        /// <param name="text"></param>
         public void ChangePromptText(string text)
         {
             gameUI.SetPromptText(text);
         }
         
+        /// <summary>
+        /// Clear PromptText in GameUI
+        /// </summary>
         public void ClearPromptText()
         {
             gameUI.ClearPromptText();
         }
         
+        /// <summary>
+        /// Show FlashScreen when Player is damaged.
+        /// </summary>
         public void FlashWhenDamaged()
         {
             gameUI.Flash();
         }
 
+        /// <summary>
+        /// This method is used to change UI State
+        /// </summary>
+        /// <param name="state"></param>
         public void ChangeUIState(Enums.UIState state)
         {
             _currentState = state;

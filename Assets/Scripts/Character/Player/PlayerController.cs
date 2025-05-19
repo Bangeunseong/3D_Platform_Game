@@ -1,10 +1,7 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using Unity.Cinemachine;
 using UnityEngine;
-using Utils;
 using Utils.Common;
 
 namespace Character.Player
@@ -29,7 +26,6 @@ namespace Character.Player
         [SerializeField] private Vector2 movementDirection;
         [SerializeField] private float jumpForce = 15f;
         [SerializeField] private float gravityValue = -9.81f;
-        [SerializeField] private bool isDoubleJumpEnabled;
         [SerializeField] private LayerMask groundLayer;
 
         [Header("Body Scale Settings")] 
@@ -86,6 +82,9 @@ namespace Character.Player
             RescaleOnCrouch();
         }
 
+        /// <summary>
+        /// Calcualate player movement.
+        /// </summary>
         private void CalculateMovement()
         {
             var move = CalculateMove();
@@ -93,9 +92,9 @@ namespace Character.Player
             _isGrounded = IsGrounded_Method();
             
             if (_isGrounded) { if(!_isOnJumpPad) { _velocity.y = 0f; _jumpCount = 0; } }
-            else { move /= 2; _velocity.y += gravityValue * rigidBody.mass * Time.fixedDeltaTime; }
+            else { _velocity.y += gravityValue * rigidBody.mass * Time.fixedDeltaTime; }
             
-            if((_isJumpPressed && _isGrounded) || (isDoubleJumpEnabled && !_isGrounded && _isJumpPressed && _jumpCount < 2))
+            if((_isJumpPressed && _isGrounded) || (condition.IsDoubleJumpEnabled && !_isGrounded && _isJumpPressed && _jumpCount < 2))
             {
                 _velocity.y += jumpForce;
                 _isJumpPressed = false;
@@ -105,6 +104,10 @@ namespace Character.Player
             rigidBody.linearVelocity = move + _velocity;
         }
         
+        /// <summary>
+        /// Check if player is grounded.
+        /// </summary>
+        /// <returns></returns>
         private bool IsGrounded_Method()
         {
             var ray = new[]
@@ -118,6 +121,10 @@ namespace Character.Player
             return ray.Any(t => Physics.Raycast(t, 0.1f, groundLayer));
         }
 
+        /// <summary>
+        /// Calculate player movement direction and speed.
+        /// </summary>
+        /// <returns></returns>
         private Vector3 CalculateMove()
         {
             if(movementDirection == Vector2.zero) speed = _originalSpeed;
@@ -132,6 +139,10 @@ namespace Character.Player
             return (transform.forward * movementDirection.y + transform.right * movementDirection.x).normalized * speed;
         }
 
+        /// <summary>
+        /// Method that will be called when player enters and stays in Jump Pad.
+        /// </summary>
+        /// <param name="force"></param>
         public void EnteredInJumpPad(float force)
         {
             if (_isOnJumpPad) return;
@@ -139,11 +150,17 @@ namespace Character.Player
             _velocity.y = force;
         }
 
+        /// <summary>
+        /// Method that will be called when player leaves Jump Pad.
+        /// </summary>
         public void ExitedFromJumpPad()
         {
             _isOnJumpPad = false;
         }
 
+        /// <summary>
+        /// Rescale body scale on crouching.
+        /// </summary>
         private void RescaleOnCrouch()
         {
             if (!_isCrouching) return;
@@ -175,6 +192,10 @@ namespace Character.Player
             }
         }
 
+        /// <summary>
+        /// Coroutine that consumes stamina on sprint.
+        /// </summary>
+        /// <returns></returns>
         private IEnumerator ConsumeStaminaOnSprint_Coroutine()
         {
             while (condition.OnUseStamina(2f))
@@ -184,6 +205,10 @@ namespace Character.Player
             if(_isSprintPressed) OnSprint();
         }
 
+        /// <summary>
+        /// Coroutine that switches camera between first person and third person.
+        /// </summary>
+        /// <returns></returns>
         private IEnumerator CameraSwitch_Coroutine()
         {
             if (firstPersonCamera.Priority == 10)

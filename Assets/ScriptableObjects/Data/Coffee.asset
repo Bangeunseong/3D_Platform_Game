@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Coffee
   description: Infinite stamina for 10 seconds
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: b40fc94014588064c8eab55ae5ae3061, type: 3}
   itemPrefab: {fileID: 6869508658388287760, guid: e2c1ccd356f499d48baaef21f41809c2, type: 3}
   maxStackCount: 12
   consumables:

@@ -9,6 +9,7 @@ namespace Manager
         // Fields
         private UIManager _uiManager;
         private CharacterManager _characterManager;
+        private ItemManager _itemManager;
         
         // Properties
         public bool IsGameActive { get; private set; }
@@ -35,6 +36,7 @@ namespace Manager
         {
             _uiManager = UIManager.Instance;
             _characterManager = CharacterManager.Instance;
+            _itemManager = ItemManager.Instance;
             _characterManager.Player.Condition.OnDamage += _uiManager.FlashWhenDamaged;
             _characterManager.Player.Condition.OnDeath += GameOver;
         }

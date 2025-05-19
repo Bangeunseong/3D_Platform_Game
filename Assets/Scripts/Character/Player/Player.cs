@@ -16,6 +16,7 @@ namespace Character.Player
         [SerializeField] private PlayerController controller;
         [SerializeField] private PlayerCondition condition;
         [SerializeField] private PlayerInteraction interaction;
+        [SerializeField] private Transform itemThrowTransform;
         [SerializeField] private ItemData itemData;
 
         // Action Events
@@ -26,6 +27,7 @@ namespace Character.Player
         public PlayerController Controller => controller;
         public PlayerCondition Condition => condition;
         public PlayerInteraction Interaction => interaction;
+        public Transform ItemThrowTransform => itemThrowTransform;
         public ItemData ItemData { get => itemData; set => itemData = value; }
         public UnityEvent AddItem => addItem;
         

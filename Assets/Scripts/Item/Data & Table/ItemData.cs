@@ -22,7 +22,7 @@ namespace Item.Data___Table
         public Sprite icon;
         public GameObject itemPrefab;
         
-        [Header("Max Stack Count")]
+        [Header("Stack")]
         public int maxStackCount;
         
         [Header("Effects of Item")]

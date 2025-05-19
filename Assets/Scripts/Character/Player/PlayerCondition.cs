@@ -1,10 +1,9 @@
 using System;
 using System.Collections;
+using Item.Data___Table;
 using JetBrains.Annotations;
 using Manager;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Utils.Entity;
 using Utils.Interfaces;
 
@@ -12,20 +11,29 @@ namespace Character.Player
 {
     public class PlayerCondition : MonoBehaviour, IDamagable
     {
-        [Header("Conditions")] 
+        [Header("Condition Settings")] 
         [SerializeField] private Condition health;
         [SerializeField] private Condition stamina;
-        [SerializeField] private bool isDead;
         [SerializeField] private float staminaRecoverDelayTime = 5f;
         [SerializeField] private float timeSinceLastStaminaUse;
         
+        [Header("Current Conditions")]
+        [SerializeField] private bool isDead;
+        [SerializeField] private bool isInvincible;
+        [SerializeField] private bool isStaminaInfinite;
+        [SerializeField] private bool isDoubleJumpEnabled;
+        
         // Fields
         private Coroutine _staminaRecoverCoroutine;
+        private Coroutine _invincibleCoroutine;
+        private Coroutine _doubleJumpCoroutine;
+        private Coroutine _staminaInfiniteCoroutine;
         private UIManager _uiManager;
         
         // Properties
         public Condition Health => health;
         public Condition Stamina => stamina;
+        public bool IsDoubleJumpEnabled => isDoubleJumpEnabled;
         
         // Action Events
         [CanBeNull] public event Action OnDamage, OnDeath;
@@ -33,7 +41,9 @@ namespace Character.Player
         private void Awake()
         {
             health = new GameObject("Health").AddComponent<Condition>();
+            health.transform.SetParent(transform);
             stamina = new GameObject("Stamina").AddComponent<Condition>();
+            stamina.transform.SetParent(transform);
         }
 
         private void Start()
@@ -53,8 +63,7 @@ namespace Character.Player
 
         public void OnPhysicalDamage(float damage)
         {
-            if (isDead) return;
-            
+            if (isDead || isInvincible) return;
             health.SubtractValue(damage);
             _uiManager.ChangeHpBar(health.GetPercentageOfValue());
             OnDamage?.Invoke();
@@ -69,13 +78,14 @@ namespace Character.Player
         public bool OnUseStamina(float value)
         {
             if (stamina.CurrentValue - value < 0f) return false;
+            if (isStaminaInfinite) return true;
             stamina.SubtractValue(value);
             _uiManager.ChangeStaminaBar(stamina.GetPercentageOfValue());
             timeSinceLastStaminaUse = 0;
             return true;
         }
         
-        public void OnRecoverHealth(float value)
+        private void OnRecoverHealth(float value)
         {
             health.AddValue(value);
             _uiManager.ChangeHpBar(health.GetPercentageOfValue());
@@ -85,6 +95,62 @@ namespace Character.Player
         {
             stamina.AddValue(value);
             _uiManager.ChangeStaminaBar(stamina.GetPercentageOfValue());
+        }
+
+        public void OnItemConsumed(ItemData data)
+        {
+            foreach (var consumable in data.consumables)
+            {
+                switch (consumable.type)
+                {
+                    case ConsumableType.Health:
+                        OnRecoverHealth(consumable.value);
+                        break;
+                    case ConsumableType.Invincible:
+                    {
+                        if (_invincibleCoroutine != null) StopCoroutine(_invincibleCoroutine);
+                        _invincibleCoroutine = StartCoroutine(Invincible_Coroutine(consumable.duration));
+                        break;
+                    }
+                    case ConsumableType.InfiniteStamina:
+                    {
+                        if (_staminaInfiniteCoroutine != null) StopCoroutine(_staminaInfiniteCoroutine);
+                        _staminaInfiniteCoroutine = StartCoroutine(StaminaInfinite_Coroutine(consumable.duration));
+                        break;
+                    }
+                    case ConsumableType.DoubleJump:
+                    {
+                        if (_doubleJumpCoroutine != null) StopCoroutine(_doubleJumpCoroutine);
+                        _doubleJumpCoroutine = StartCoroutine(DoubleJump_Coroutine(consumable.duration));
+                        break;
+                    }
+                    default: throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
+
+        private IEnumerator Invincible_Coroutine(float duration)
+        {
+            isInvincible = true;
+            yield return new WaitForSeconds(duration);
+            isInvincible = false;
+            _invincibleCoroutine = null;
+        }
+
+        private IEnumerator StaminaInfinite_Coroutine(float duration)
+        {
+            isStaminaInfinite = true;
+            yield return new WaitForSeconds(duration);
+            isStaminaInfinite = false;
+            _staminaInfiniteCoroutine = null;
+        }
+
+        private IEnumerator DoubleJump_Coroutine(float duration)
+        {
+            isDoubleJumpEnabled = true;
+            yield return new WaitForSeconds(duration);
+            isDoubleJumpEnabled = false;
+            _doubleJumpCoroutine = null;
         }
 
         private void Die()

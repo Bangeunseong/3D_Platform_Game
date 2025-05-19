@@ -1,8 +1,6 @@
-using System;
 using Character.Player;
 using Manager;
 using UnityEngine;
-using Utils.Common;
 
 namespace Environment
 {
