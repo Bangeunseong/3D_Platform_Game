@@ -37,7 +37,7 @@ namespace Character.Player
         
         public void OnMove(InputAction.CallbackContext context)
         {
-            if (!_gameManager.IsGameActive || playerInteraction.IsInventoryOpen) return;
+            if (!_gameManager.IsGameActive || playerInteraction.IsInventoryOpen) { controller.OnMove(Vector2.zero); return; }
             if (!context.performed)
             {
                 controller.OnMove(Vector2.zero); 
@@ -49,7 +49,7 @@ namespace Character.Player
 
         public void OnLook(InputAction.CallbackContext context)
         {
-            if (!_gameManager.IsGameActive || playerInteraction.IsInventoryOpen) return;
+            if (!_gameManager.IsGameActive || playerInteraction.IsInventoryOpen){ cameraController.OnLook(Vector2.zero); return; }
             cameraController.OnLook(context.ReadValue<Vector2>());
         }
         

@@ -263,7 +263,7 @@ namespace Character.Player
         /// </summary>
         public void OnSprint()
         {
-            if (_isCrouchPressed) OnCrouch();
+            if (_isCrouchPressed) { _isCrouchPressed = false; _isCrouching = false; }
             _isSprintPressed = !_isSprintPressed;
         }
 
@@ -273,7 +273,7 @@ namespace Character.Player
         public void OnCrouch()
         {
             if (!_isGrounded) return;
-            if (_isSprintPressed) OnSprint();
+            if (_isSprintPressed) { _isSprintPressed = false; }
             _isCrouchPressed = !_isCrouchPressed; _isCrouching = true;
         }
 

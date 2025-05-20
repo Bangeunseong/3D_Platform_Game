@@ -35,12 +35,16 @@ namespace Environment
 
         private void Update()
         {
+            // Update Previous position of Platform
             PreviousPosition = transform.position;
         }
 
+        
         private void LateUpdate()
         {
             if (!_isPlayerOnPlatform) return;
+            
+            // Insert Position Delta of Platform into player position value, when player is on the platform
             _player.transform.position += DeltaPosition;
         }
 

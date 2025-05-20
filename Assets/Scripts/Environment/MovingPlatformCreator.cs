@@ -45,7 +45,7 @@ namespace Environment
             
             // Initialize Platform
             Platform = Helper.GetComponent_Helper<MovingPlatform>(_platform);
-            Platform.Init(_platform.transform.position, _platform.transform.position + Quaternion.Euler(spawnRotation) * Vector3.forward * ((distanceBetweenStairs / 2f - 7f) * 2f) , targetLayer, moveDelayTime, moveDuration);
+            Platform.Init(_platform.transform.position, _platform.transform.position + Quaternion.Euler(spawnRotation) * Vector3.forward * ((distanceBetweenStairs / 2f - platformOffset.z) * 2f) , targetLayer, moveDelayTime, moveDuration);
         }
 
         private void OnDrawGizmosSelected()
