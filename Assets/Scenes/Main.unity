@@ -337,6 +337,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: a14db641-3fe2-4835-a083-6fe5fe2c0581
     m_ActionName: 'Player/SwitchCamera[/Keyboard/c]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 95555498}
+        m_TargetAssemblyTypeName: Character.Player.PlayerInput, Assembly-CSharp
+        m_MethodName: OnInventory
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 603b412c-7048-44ba-9f47-9be2adc4bd01
+    m_ActionName: 'Player/Inventory[/Keyboard/tab]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player
@@ -356,6 +372,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   cameraController: {fileID: 0}
+  playerInteraction: {fileID: 0}
+  player: {fileID: 0}
 --- !u!114 &95555499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1250,6 +1268,7 @@ Transform:
   - {fileID: 5962629289361267682}
   - {fileID: 5495989085842102004}
   - {fileID: 5230063862092054210}
+  - {fileID: 2085515841}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &432887185
@@ -1288,7 +1307,7 @@ MonoBehaviour:
   gameUI: {fileID: 1477032440}
   gameOverUI: {fileID: 766932411}
   gamePauseUI: {fileID: 1692623842}
-  inventoryUI: {fileID: 0}
+  inventoryUI: {fileID: 2144297127}
 --- !u!114 &432887187
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4590,6 +4609,61 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2085515839
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2085515841}
+  - component: {fileID: 2085515840}
+  m_Layer: 0
+  m_Name: Platform_Move
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2085515840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2085515839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 293e089308cad3f4b98e519819a9404b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stairPrefab: {fileID: 1127830002699233456, guid: 1c1eb3a9a5036014b9c7f4445fa710ae, type: 3}
+  platformPrefab: {fileID: 4651156267674083300, guid: d6005de4ca633af4e97d330bbb7e0e15, type: 3}
+  distanceBetweenStairs: 20
+  spawnPosition: {x: 4, y: 0, z: 2}
+  spawnRotation: {x: 0, y: 0, z: 0}
+  platformOffset: {x: 0.5, y: 3, z: 7}
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  moveDelayTime: 3
+  moveDuration: 2
+--- !u!4 &2085515841
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2085515839}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 420451916}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2144297125
 GameObject:

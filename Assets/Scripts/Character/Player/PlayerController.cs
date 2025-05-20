@@ -50,6 +50,7 @@ namespace Character.Player
         // Properties
         public bool IsSprintPressed => _isSprintPressed;
         public bool IsFirstPersonCameraOn { get; private set; } = true;
+        public bool IsOnPlatform { get; set; }
 
         private void Awake()
         {
@@ -78,6 +79,7 @@ namespace Character.Player
 
         private void FixedUpdate()
         {
+            
             CalculateMovement();
             RescaleOnCrouch();
         }
