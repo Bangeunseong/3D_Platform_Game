@@ -65,7 +65,7 @@ namespace Item
             quantityText.text = string.Empty;
         }
 
-        public void OnClickButton()
+        private void OnClickButton()
         {
             _inventory.SelectItem(index);
         }

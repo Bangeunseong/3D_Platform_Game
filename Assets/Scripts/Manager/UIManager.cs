@@ -12,9 +12,13 @@ namespace Manager
         [SerializeField] private GameUI gameUI;
         [SerializeField] private GameOverUI gameOverUI;
         [SerializeField] private GamePauseUI gamePauseUI;
+        [SerializeField] private InventoryUI inventoryUI;
         
         // State Field
         private Enums.UIState _currentState;
+        
+        // Properties
+        public InventoryUI InventoryUI => inventoryUI;
         
         // Singleton
         private static UIManager _instance;
@@ -36,11 +40,13 @@ namespace Manager
             if (!gameUI) gameUI = Helper.GetComponentInChildren_Helper<GameUI>(gameObject);
             if (!gameOverUI) gameOverUI = Helper.GetComponentInChildren_Helper<GameOverUI>(gameObject);
             if (!gamePauseUI) gamePauseUI = Helper.GetComponentInChildren_Helper<GamePauseUI>(gameObject);
+            if (!inventoryUI) inventoryUI = Helper.GetComponentInChildren_Helper<InventoryUI>(gameObject, true);
             
             gameIntroUI.Init(this);
             gameUI.Init(this);
             gameOverUI.Init(this);
             gamePauseUI.Init(this);
+            inventoryUI.Init(this);
             
             ChangeUIState(Enums.UIState.GameIntro);
         }

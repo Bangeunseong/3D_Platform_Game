@@ -18,6 +18,7 @@ namespace Manager
         [Header("Inventory Slots")] 
         [SerializeField] private ItemSlot[] itemSlots;
         [SerializeField] private int maxDataCount = 6;
+        [SerializeField] private GameObject itemSlotPrefab;
         
         [Header("Item Throw Transform")]
         [SerializeField] private Transform itemThrowTransform;
@@ -26,23 +27,11 @@ namespace Manager
         [CanBeNull] [SerializeField] private ItemData selectedItem;
         [SerializeField] private int selectedItemIndex;
         
-        [Header("Inventory Window")]
-        [SerializeField] private GameObject inventoryWindow;
-        [SerializeField] private Transform slotPanel;
-
-        [Header("Select Item")] 
-        [SerializeField] private TextMeshProUGUI selectedItemName;
-        [SerializeField] private TextMeshProUGUI selectedItemDescription;
-        [SerializeField] private TextMeshProUGUI selectedStatName;
-        [SerializeField] private TextMeshProUGUI selectedStatValue;
-        [SerializeField] private GameObject useButton;
-        [SerializeField] private GameObject equipButton;
-        [SerializeField] private GameObject unequipButton;
-        [SerializeField] private GameObject dropButton;
-        
         // Fields
-        private PlayerCondition _condition; 
         private UIManager _uiManager;
+        
+        // Properties
+        public ItemData SelectedItem => selectedItem;
         
         // Singleton
         private static InventoryManager _instance;
@@ -63,43 +52,20 @@ namespace Manager
 
         private void Start()
         {
-            _condition = CharacterManager.Instance.Player.Condition;
+            itemThrowTransform = CharacterManager.Instance.Player.ItemThrowTransform;
             _uiManager = UIManager.Instance;
+            
             itemSlots = new ItemSlot[maxDataCount];
             
             for (var i = 0; i < itemSlots.Length; i++)
             {
-                itemSlots[i] = Helper.GetComponent_Helper<ItemSlot>(slotPanel.GetChild(i).gameObject);
+                var go = Instantiate(itemSlotPrefab, _uiManager.InventoryUI.SlotPanel);
+                itemSlots[i] = Helper.GetComponent_Helper<ItemSlot>(go); 
                 itemSlots[i].Index = i;
                 itemSlots[i].Inventory = this;
             }
-            
-            SetButtonActions();
-            ClearSelectedItemWindow();
-            inventoryWindow.SetActive(false);
-        }
-        
-        private void ClearSelectedItemWindow()
-        {
-            selectedItemName.text = string.Empty;
-            selectedItemDescription.text = string.Empty;
-            selectedStatName.text = string.Empty;
-            selectedStatValue.text = string.Empty;
+            UpdateSlots();
             selectedItem = null;
-            
-            useButton.SetActive(false);
-            equipButton.SetActive(false);
-            unequipButton.SetActive(false);
-            dropButton.SetActive(false);
-        }
-
-        private void SetButtonActions()
-        {
-            var use = Helper.GetComponent_Helper<Button>(useButton);
-            var drop = Helper.GetComponent_Helper<Button>(dropButton);
-            
-            use.onClick.AddListener(OnUseButton);
-            drop.onClick.AddListener(OnDropButton);
         }
         
         public void AddItem()
@@ -111,17 +77,18 @@ namespace Manager
             if (slot)
             {
                 slot.Quantity++;
-                // Update UI
+                UpdateSlots();
                 CharacterManager.Instance.Player.ItemData = null; 
                 return;
             }
             
             // If Item is not stackable or reached to maxStackCount, find Empty Slot
             var emptySlot = GetEmptySlot();
-            if(emptySlot){
+            if(emptySlot)
+            {
                 emptySlot.ItemData = data;
                 emptySlot.Quantity = 1;
-                // Update UI
+                UpdateSlots();
                 CharacterManager.Instance.Player.ItemData = null;
                 return;
             }
@@ -131,7 +98,7 @@ namespace Manager
             CharacterManager.Instance.Player.ItemData = null;
         }
         
-        private void UpdateInventoryUI()
+        private void UpdateSlots()
         {
             foreach (var slot in itemSlots)
             {
@@ -140,56 +107,32 @@ namespace Manager
             }
         }
         
-        private ItemSlot? GetItemInStack(ItemData data)
+        private ItemSlot GetItemInStack(ItemData data)
         {
             return itemSlots.FirstOrDefault(slot => slot.ItemData == data && slot.Quantity < data.maxStackCount);
         }
 
-        private ItemSlot? GetEmptySlot()
+        private ItemSlot GetEmptySlot()
         {
             return itemSlots.FirstOrDefault(slot => !slot.ItemData);
         }
         
-        private void ThrowItem(ItemData data)
+        public void ThrowItem(ItemData data)
         {
             Instantiate(data.itemPrefab, itemThrowTransform.position, Quaternion.Euler(Vector3.one * Random.value * 360));
         }
         
         public void SelectItem(int index)
         {
-            if(!itemSlots[index].ItemData){ ClearSelectedItemWindow(); return; }
+            if (!itemSlots[index].ItemData) { _uiManager.InventoryUI.ClearSelectedItemWindow(); return; }
             
             selectedItem = itemSlots[index].ItemData;
             selectedItemIndex = index;
             
-            selectedItemName.text = selectedItem.itemName;
-            selectedItemDescription.text = selectedItem.description;
-            selectedStatName.text = string.Empty;
-            selectedStatValue.text = string.Empty;
-
-            foreach (var itemDataConsumable in selectedItem.consumables)
-            {
-                selectedStatName.text += itemDataConsumable.type + "\n";
-                selectedStatValue.text += itemDataConsumable.value + "\n";
-            }
-            
-            useButton.SetActive(true);
-            dropButton.SetActive(true);
-        }
-
-        public void OnUseButton()
-        {
-            _condition.OnItemConsumed(selectedItem);
-            RemoveSelectedItem();
-        }
-
-        public void OnDropButton()
-        {
-            ThrowItem(selectedItem);
-            RemoveSelectedItem();
+            _uiManager.InventoryUI.SetSelectedItemWindow(selectedItem);
         }
         
-        private void RemoveSelectedItem()
+        public void RemoveSelectedItem()
         {
             itemSlots[selectedItemIndex].Quantity--;
             if (itemSlots[selectedItemIndex].Quantity <= 0)
@@ -197,10 +140,10 @@ namespace Manager
                 selectedItem = null;
                 itemSlots[selectedItemIndex].ItemData = null;
                 selectedItemIndex = -1;
-                ClearSelectedItemWindow();
+                _uiManager.InventoryUI.ClearSelectedItemWindow();
             }
             
-            UpdateInventoryUI();
+            UpdateSlots();
         }
     }
 }

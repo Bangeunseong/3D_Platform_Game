@@ -248,7 +248,12 @@ namespace Character.Player
         public void OnJump(bool jump)
         {
             if(_isCrouchPressed) OnCrouch();
-            if(condition.OnUseStamina(10f)) _isJumpPressed = jump;
+            if(_isGrounded && condition.OnUseStamina(10f)) { _isJumpPressed = jump; }
+            
+            // Condition Break Point
+            if (!condition.IsDoubleJumpEnabled) return;
+            
+            if(!_isGrounded && _jumpCount < 2 && condition.OnUseStamina(10f)) _isJumpPressed = jump;
         }
 
         /// <summary>

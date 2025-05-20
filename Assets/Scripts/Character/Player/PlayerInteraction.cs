@@ -17,9 +17,10 @@ namespace Character.Player
         private float _lastCheckTime;
         private UnityEngine.Camera _camera;
         private UIManager _uiManager;
-
+        
         // Properties
         public IInteractable Interactable { get; private set; }
+        public bool IsInventoryOpen { get; private set; }
         
         private void Start()
         {
@@ -41,6 +42,7 @@ namespace Character.Player
                 
                 interactableObject = hit.collider.gameObject;
                 Interactable = interactableObject.GetComponent<IInteractable>();
+                Debug.Log(Interactable.ToString());
                 _uiManager.ChangePromptText(Interactable.GetInteractPrompt());
             }
             else
@@ -57,6 +59,19 @@ namespace Character.Player
             interactableObject = null;
             Interactable = null;
             _uiManager.ClearPromptText();
+        }
+
+        public void OnInventory()
+        {
+            IsInventoryOpen = !IsInventoryOpen;
+            _uiManager.InventoryUI.ToggleInventoryWindow();
+            ToggleCursor();
+        }
+        
+        private void ToggleCursor()
+        {
+            var isCursorLocked = Cursor.lockState == CursorLockMode.Locked;
+            Cursor.lockState = isCursorLocked ? CursorLockMode.None : CursorLockMode.Locked;
         }
     }
 }

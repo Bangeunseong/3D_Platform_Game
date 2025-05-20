@@ -20,6 +20,7 @@ namespace Item
         {
             CharacterManager.Instance.Player.ItemData = data;
             CharacterManager.Instance.Player.AddItem?.Invoke();
+            Destroy(gameObject);
         }
     }
 }
