@@ -1,5 +1,5 @@
 using System;
-using Character.Camera;
+using Character.Player.Camera;
 using Manager;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -17,20 +17,14 @@ namespace Character.Player
         [SerializeField] private Player player;
         
         private GameManager _gameManager;
-        private UIManager _uiManager;
-
-        private void Awake()
-        {
-            if (!controller) controller = Helper.GetComponent_Helper<PlayerController>(gameObject);
-            if (!cameraController) cameraController = Helper.GetComponent_Helper<CameraController>(gameObject);
-            if (!playerInteraction) playerInteraction = Helper.GetComponent_Helper<PlayerInteraction>(gameObject);
-            if (!player) player = Helper.GetComponent_Helper<Player>(gameObject);
-        }
 
         private void Start()
         {
             _gameManager = GameManager.Instance;
-            _uiManager = UIManager.Instance;
+            player = CharacterManager.Instance.Player;
+            playerInteraction = player.Interaction;
+            cameraController = player.CameraController;
+            controller = player.Controller;
         }
 
         #region Input Actions
@@ -62,7 +56,7 @@ namespace Character.Player
         public void OnInteract(InputAction.CallbackContext context)
         {
             if (!_gameManager.IsGameActive || playerInteraction.IsInventoryOpen) return;
-            if(context.started && playerInteraction.Interactable != null) playerInteraction.OnInteract();
+            if (context.started && playerInteraction.Interactable != null) playerInteraction.OnInteract();
         }
 
         public void OnAttack(InputAction.CallbackContext context)

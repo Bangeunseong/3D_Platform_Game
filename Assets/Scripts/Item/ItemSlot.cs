@@ -38,8 +38,7 @@ namespace Item
                 for (var i = 0; i < gameObject.transform.childCount; i++)
                 {
                     var child = gameObject.transform.GetChild(i);
-                    if (!icon) 
-                        icon = Helper.GetComponent_Helper<Image>(child.gameObject);
+                    if (!icon) icon = Helper.GetComponent_Helper<Image>(child.gameObject);
                 }
             }
             if (!quantityText) quantityText = Helper.GetComponentInChildren_Helper<TextMeshProUGUI>(gameObject);

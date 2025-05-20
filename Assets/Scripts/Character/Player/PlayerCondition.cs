@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using Item.Data___Table;
 using JetBrains.Annotations;
 using Manager;
@@ -22,6 +23,12 @@ namespace Character.Player
         [SerializeField] private bool isInvincible;
         [SerializeField] private bool isStaminaInfinite;
         [SerializeField] private bool isDoubleJumpEnabled;
+        [SerializeField] private bool isClimbable;
+        
+        [Header("Climbable Wall Settings")]
+        [SerializeField] private LayerMask climbableWallLayer;
+        [SerializeField] private float lastCheckTime;
+        [SerializeField] private float checkRate = 0.05f;
         
         // Fields
         private Coroutine _staminaRecoverCoroutine;
@@ -34,7 +41,10 @@ namespace Character.Player
         public Condition Health => health;
         public Condition Stamina => stamina;
         public bool IsDoubleJumpEnabled => isDoubleJumpEnabled;
-        
+        public LayerMask ClimbableWallLayer => climbableWallLayer;
+        public bool IsClimbable { get => isClimbable; set => isClimbable = value; }
+        public bool IsClimbActive { get; set; }
+
         // Action Events
         [CanBeNull] public event Action OnDamage, OnDeath;
 
@@ -57,8 +67,24 @@ namespace Character.Player
         
         private void Update()
         {
+            if (Time.time - lastCheckTime >= checkRate)
+            {
+                lastCheckTime = Time.time;
+                isClimbable = IsContactedToClimbableWall();
+            }
+            
             if (timeSinceLastStaminaUse <= staminaRecoverDelayTime) { timeSinceLastStaminaUse += Time.deltaTime; }
             else { if (stamina.CurrentValue < stamina.MaxValue) OnRecoverStamina(stamina.PassiveValue * Time.deltaTime); }
+        }
+
+        private bool IsContactedToClimbableWall()
+        {
+            var rays = new[]
+            {
+                new Ray(transform.position + new Vector3(0, 1f), Vector3.forward),
+            };
+            
+            return rays.Any(ray => Physics.Raycast(ray, 1f, climbableWallLayer));
         }
 
         public void OnPhysicalDamage(float damage)

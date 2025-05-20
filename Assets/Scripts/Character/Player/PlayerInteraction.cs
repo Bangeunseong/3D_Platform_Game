@@ -1,4 +1,5 @@
 using System;
+using Environment;
 using Manager;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -15,7 +16,9 @@ namespace Character.Player
         [SerializeField] private GameObject interactableObject;
         
         private float _lastCheckTime;
+        private bool _isPlayerOnWall;
         private UnityEngine.Camera _camera;
+        private GameManager _gameManager;
         private UIManager _uiManager;
         
         // Properties
@@ -26,11 +29,13 @@ namespace Character.Player
         {
             _camera = UnityEngine.Camera.main;
             _uiManager = UIManager.Instance;
+            _gameManager = GameManager.Instance;
         }
         
         // Update is called once per frame
         private void Update()
         {
+            if(!_gameManager.IsGameActive) return;
             if (Time.time - _lastCheckTime < checkRate) return;
             
             _lastCheckTime = Time.time;

@@ -1,6 +1,8 @@
+using System;
+using Manager;
 using UnityEngine;
 
-namespace Character.Camera
+namespace Character.Player.Camera
 {
     public class CameraController : MonoBehaviour
     {
@@ -12,7 +14,19 @@ namespace Character.Camera
         [SerializeField] private float maxX;
         [SerializeField] private float cameraVerticalMovement;
         [SerializeField] private Vector2 mouseDelta;
+
+        private Player _player;
+        private PlayerCondition _playerCondition;
+        private float _cameraYaw = 0f;
         
+        public Transform CameraPivot => cameraPivot;
+
+        private void Start()
+        {
+            _player = CharacterManager.Instance.Player;
+            _playerCondition = _player.Condition;
+        }
+
         private void LateUpdate()
         {
             RotateCamera();
@@ -22,8 +36,18 @@ namespace Character.Camera
         {
             cameraVerticalMovement += mouseDelta.y * cameraSensitivity;
             cameraVerticalMovement = Mathf.Clamp(cameraVerticalMovement, minX, maxX);
-            cameraPivot.localEulerAngles = new Vector3(-cameraVerticalMovement, 0, 0);
-            transform.eulerAngles += new Vector3(0, mouseDelta.x * cameraSensitivity, 0);
+            if (!_playerCondition.IsClimbActive)
+            {
+                cameraPivot.localEulerAngles = new Vector3(-cameraVerticalMovement, 0, 0);
+                transform.eulerAngles += new Vector3(0, mouseDelta.x * cameraSensitivity, 0);
+                
+                _cameraYaw = 0f;
+            }
+            else
+            {
+                _cameraYaw += mouseDelta.x * cameraSensitivity;
+                cameraPivot.localEulerAngles = new Vector3(-cameraVerticalMovement, _cameraYaw, 0);
+            }
         }
 
         #region Player Input Methods

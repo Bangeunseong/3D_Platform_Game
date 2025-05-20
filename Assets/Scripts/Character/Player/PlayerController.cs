@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Linq;
+using Manager;
 using Unity.Cinemachine;
 using UnityEngine;
 using Utils.Common;
@@ -50,19 +51,18 @@ namespace Character.Player
         // Properties
         public bool IsSprintPressed => _isSprintPressed;
         public bool IsFirstPersonCameraOn { get; private set; } = true;
-        public bool IsOnPlatform { get; set; }
 
         private void Awake()
         {
             if (!rigidBody) rigidBody = Helper.GetComponent_Helper<Rigidbody>(gameObject);
-            if (!input) input = Helper.GetComponent_Helper<PlayerInput>(gameObject);
-            if (!condition) condition = Helper.GetComponent_Helper<PlayerCondition>(gameObject);
             if (!capsuleCollider) capsuleCollider = Helper.GetComponent_Helper<CapsuleCollider>(gameObject);
             if (!body) { Debug.LogError("Body is null!"); throw new MissingComponentException(); }
         }
 
         private void Start()
         {
+            input = CharacterManager.Instance.Player.PlayerInput;
+            condition = CharacterManager.Instance.Player.Condition;
             _cam = UnityEngine.Camera.main;
             _originalSpeed = speed;
         }
@@ -79,8 +79,8 @@ namespace Character.Player
 
         private void FixedUpdate()
         {
-            
-            CalculateMovement();
+            if(!condition.IsClimbActive) CalculateMovement();
+            else CalculateMovement_OnWall();
             RescaleOnCrouch();
         }
 
@@ -104,6 +104,28 @@ namespace Character.Player
             }
 
             rigidBody.linearVelocity = move + _velocity;
+        }
+
+        private void CalculateMovement_OnWall()
+        {
+            if (!RayCastWall(out var hit))
+            {
+                condition.IsClimbActive = false;
+                return;
+            }
+
+            // Fixate character forward as normal of hit
+            transform.forward = -hit.normal;
+            
+            var climbDirection = (Vector3.up * movementDirection.y + transform.right * movementDirection.x).normalized;
+            var climbVelocity = climbDirection * 10f;
+
+            rigidBody.linearVelocity = climbVelocity + -hit.normal * 5f;
+        }
+
+        private bool RayCastWall(out RaycastHit hit)
+        {
+            return Physics.Raycast(transform.position, transform.forward, out hit, 0.8f, condition.ClimbableWallLayer);
         }
         
         /// <summary>
@@ -249,11 +271,14 @@ namespace Character.Player
         /// <param name="jump"></param>
         public void OnJump(bool jump)
         {
-            if(_isCrouchPressed) OnCrouch();
-            if(_isGrounded && condition.OnUseStamina(10f)) { _isJumpPressed = jump; }
+            if (condition.IsClimbActive) { condition.IsClimbActive = false; condition.IsClimbable = false;  return; }
+            if (condition.IsClimbable) { condition.IsClimbActive = true; return; }
+            
+            if (_isCrouchPressed) OnCrouch();
+            if (_isGrounded && condition.OnUseStamina(10f)) _isJumpPressed = jump;
             
             // Condition Break Point
-            if (!condition.IsDoubleJumpEnabled) return;
+            if (!condition.IsDoubleJumpEnabled) { return; }
             
             if(!_isGrounded && _jumpCount < 2 && condition.OnUseStamina(10f)) _isJumpPressed = jump;
         }

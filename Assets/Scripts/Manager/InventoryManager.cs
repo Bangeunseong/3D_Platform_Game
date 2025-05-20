@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using Character.Player;
 using Item;
 using Item.Data___Table;
 using JetBrains.Annotations;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using Utils.Common;
 using Random = UnityEngine.Random;
 
