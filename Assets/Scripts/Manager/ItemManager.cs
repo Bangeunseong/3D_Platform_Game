@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Item.Data___Table;
 using UnityEngine;

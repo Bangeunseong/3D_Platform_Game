@@ -301,7 +301,7 @@ MonoBehaviour:
   laser: {fileID: 7482671058047497925}
   leftPlatform: {fileID: 467291787163110652}
   rightPlatform: {fileID: 6223799764869621164}
-  maxLaserDistance: 7
+  maxLaserDistance: 6
   laserDetectionRate: 0.01
   targetLayer:
     serializedVersion: 2
