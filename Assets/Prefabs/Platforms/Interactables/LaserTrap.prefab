@@ -298,7 +298,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   laserPivot: {fileID: 6495975294068915760}
   laserEndPoint: {fileID: 4137721368058927210}
-  laser: {fileID: 0}
+  laser: {fileID: 7482671058047497925}
   leftPlatform: {fileID: 467291787163110652}
   rightPlatform: {fileID: 6223799764869621164}
   maxLaserDistance: 7

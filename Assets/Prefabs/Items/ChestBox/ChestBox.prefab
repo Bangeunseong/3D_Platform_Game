@@ -139,7 +139,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bd72d59e40a4da2a1bb7953c5a37214, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  closedMesh: {fileID: 1347779596693282520}
+  chestMesh: {fileID: 0}
+  chestDoorMesh: {fileID: 0}
+  chestDoor: {fileID: 1347779596693282520}
   openDuration: 0.5
   openRotation: {x: 60, y: 0, z: 0}
   maxItemSpawnCount: 3

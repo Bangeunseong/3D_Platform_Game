@@ -11,10 +11,6 @@ namespace Environment
     public class ItemBox : MonoBehaviour, IInteractable
     {
         // Important Settings
-        [Header("Item Box Meshes")]
-        [SerializeField] private Mesh chestMesh;
-        [SerializeField] private Mesh chestDoorMesh;
-        
         [Header("Item Box Settings")] 
         [SerializeField] private GameObject chestDoor;
         [SerializeField] private float openDuration = 0.5f;
