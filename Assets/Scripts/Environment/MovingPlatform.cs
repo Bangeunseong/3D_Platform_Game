@@ -61,10 +61,11 @@ namespace Environment
             }
 
             transform.position = end;
+            yield return new WaitForSeconds(_moveDelayTime);
             _platformCoroutine = null;
         }
 
-        private void OnCollisionEnter(Collision other)
+        private void OnCollisionStay(Collision other)
         {
             if ((1 << other.gameObject.layer) != _targetLayer.value) return;
             if (_platformCoroutine != null) return;
