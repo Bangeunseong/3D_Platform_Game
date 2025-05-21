@@ -47,7 +47,7 @@ MonoBehaviour:
   stairPrefab: {fileID: 1127830002699233456, guid: 1c1eb3a9a5036014b9c7f4445fa710ae, type: 3}
   platformPrefab: {fileID: 4651156267674083300, guid: d6005de4ca633af4e97d330bbb7e0e15, type: 3}
   distanceBetweenStairs: 20
-  spawnPosition: {x: 4, y: 0, z: 2}
+  spawnPosition: {x: 4, y: -0.15, z: 2}
   spawnRotation: {x: 0, y: 0, z: 0}
   platformOffset: {x: 0.5, y: 3, z: 7}
   targetLayer:
