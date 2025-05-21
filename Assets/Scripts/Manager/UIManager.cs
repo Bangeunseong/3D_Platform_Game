@@ -41,13 +41,16 @@ namespace Manager
             if (!gameOverUI) gameOverUI = Helper.GetComponentInChildren_Helper<GameOverUI>(gameObject);
             if (!gamePauseUI) gamePauseUI = Helper.GetComponentInChildren_Helper<GamePauseUI>(gameObject);
             if (!inventoryUI) inventoryUI = Helper.GetComponentInChildren_Helper<InventoryUI>(gameObject, true);
-            
+        }
+
+        private void Start()
+        {
             gameIntroUI.Init(this);
             gameUI.Init(this);
             gameOverUI.Init(this);
             gamePauseUI.Init(this);
             inventoryUI.Init(this);
-            
+                        
             ChangeUIState(Enums.UIState.GameIntro);
         }
         

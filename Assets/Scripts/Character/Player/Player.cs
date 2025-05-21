@@ -9,7 +9,7 @@ using Utils.Common;
 namespace Character.Player
 {
     [RequireComponent(typeof(PlayerController), typeof(PlayerInput), typeof(PlayerCondition))]
-    [RequireComponent(typeof(PlayerInteraction), typeof(CameraController))]
+    [RequireComponent(typeof(PlayerInteraction), typeof(CameraController), typeof(PlayerAnimation))]
     public class Player : MonoBehaviour
     {
         // Components
@@ -19,6 +19,7 @@ namespace Character.Player
         [SerializeField] private PlayerInteraction interaction;
         [SerializeField] private CameraController cameraController;
         [SerializeField] private PlayerInput playerInput;
+        [SerializeField] private PlayerAnimation playerAnimation;
         [SerializeField] private Transform itemThrowTransform;
         [SerializeField] private ItemData itemData;
 
@@ -32,6 +33,7 @@ namespace Character.Player
         public PlayerInteraction Interaction => interaction;
         public CameraController CameraController => cameraController;
         public PlayerInput PlayerInput => playerInput;
+        public PlayerAnimation PlayerAnimation => playerAnimation;
         public Transform ItemThrowTransform => itemThrowTransform;
         public ItemData ItemData { get => itemData; set => itemData = value; }
         public UnityEvent AddItem => addItem;
@@ -43,6 +45,7 @@ namespace Character.Player
             if (!interaction) interaction = Helper.GetComponent_Helper<PlayerInteraction>(gameObject);
             if (!cameraController) cameraController = Helper.GetComponent_Helper<CameraController>(gameObject);
             if (!playerInput) playerInput = Helper.GetComponent_Helper<PlayerInput>(gameObject);
+            if (!playerAnimation) playerAnimation = Helper.GetComponent_Helper<PlayerAnimation>(gameObject);
         }
     }
 }

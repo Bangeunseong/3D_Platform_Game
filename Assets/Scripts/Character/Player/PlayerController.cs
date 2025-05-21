@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Linq;
+using Character.Player.Camera;
 using Manager;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -9,12 +11,12 @@ namespace Character.Player
 {
     public class PlayerController : MonoBehaviour
     {
-        [Header("Components")] 
-        [SerializeField] private PlayerInput input;
+        [Header("Components")]
         [SerializeField] private PlayerCondition condition;
+        [SerializeField] private PlayerAnimation animator;
+        [SerializeField] private CameraController cameraController;
         [SerializeField] private Rigidbody rigidBody;
         [SerializeField] private CapsuleCollider capsuleCollider;
-        [SerializeField] private Transform body;
         [SerializeField] private CinemachineCamera firstPersonCamera;
         [SerializeField] private CinemachineCamera thirdPersonCamera;
         private UnityEngine.Camera _cam;
@@ -29,9 +31,9 @@ namespace Character.Player
         [SerializeField] private float gravityValue = -9.81f;
         [SerializeField] private LayerMask groundLayer;
 
-        [Header("Body Scale Settings")] 
-        [SerializeField] private Vector3 crouchBodyScale = new Vector3(1f, 0.6f, 1f);
-        private Vector3 _originalBodyScale = Vector3.one;
+        [Header("CameraPivot Scale Settings")] 
+        [SerializeField] private float crouchCameraPositionY = 1f;
+        private float _originalCameraPositionY = 1.5f;
         private bool _isCrouching;
         
         // Fields
@@ -56,13 +58,14 @@ namespace Character.Player
         {
             if (!rigidBody) rigidBody = Helper.GetComponent_Helper<Rigidbody>(gameObject);
             if (!capsuleCollider) capsuleCollider = Helper.GetComponent_Helper<CapsuleCollider>(gameObject);
-            if (!body) { Debug.LogError("Body is null!"); throw new MissingComponentException(); }
         }
 
         private void Start()
         {
-            input = CharacterManager.Instance.Player.PlayerInput;
             condition = CharacterManager.Instance.Player.Condition;
+            animator = CharacterManager.Instance.Player.PlayerAnimation;
+            cameraController = CharacterManager.Instance.Player.CameraController;
+            
             _cam = UnityEngine.Camera.main;
             _originalSpeed = speed;
         }
@@ -81,7 +84,11 @@ namespace Character.Player
         {
             if(!condition.IsClimbActive) CalculateMovement();
             else CalculateMovement_OnWall();
-            RescaleOnCrouch();
+        }
+
+        private void LateUpdate()
+        {
+            RePositionCameraOnCrouch();
         }
 
         /// <summary>
@@ -92,18 +99,22 @@ namespace Character.Player
             var move = CalculateMove();
 
             _isGrounded = IsGrounded_Method();
+            animator.SetPlayerIsGrounded(_isGrounded);
             
             if (_isGrounded) { if(!_isOnJumpPad) { _velocity.y = 0f; _jumpCount = 0; } }
             else { _velocity.y += gravityValue * rigidBody.mass * Time.fixedDeltaTime; }
             
             if((_isJumpPressed && _isGrounded) || (condition.IsDoubleJumpEnabled && !_isGrounded && _isJumpPressed && _jumpCount < 2))
             {
+                animator.SetPlayerJump();
                 _velocity.y += jumpForce;
                 _isJumpPressed = false;
                 _jumpCount++;
             }
-
-            rigidBody.linearVelocity = move + _velocity;
+            
+            var totalVelocity = move + _velocity;
+            
+            rigidBody.linearVelocity = totalVelocity;
         }
 
         private void CalculateMovement_OnWall()
@@ -160,7 +171,9 @@ namespace Character.Player
             else speed = !Mathf.Approximately(speed, _originalSpeed) ? 
                 Mathf.Lerp(speed, _originalSpeed,  speed / _originalSpeed * speedDeltaMultiplier * Time.fixedDeltaTime) : _originalSpeed;
             
-            return (transform.forward * movementDirection.y + transform.right * movementDirection.x).normalized * speed;
+            var velocityXZ = (transform.forward * movementDirection.y + transform.right * movementDirection.x).normalized * speed;
+            animator.SetPlayerSpeed(velocityXZ.magnitude / 10f);
+            return velocityXZ;
         }
 
         /// <summary>
@@ -172,6 +185,7 @@ namespace Character.Player
             if (_isOnJumpPad) return;
             _isOnJumpPad = true;
             _velocity.y = force;
+            animator.SetPlayerJump();
         }
 
         /// <summary>
@@ -185,32 +199,41 @@ namespace Character.Player
         /// <summary>
         /// Rescale body scale on crouching.
         /// </summary>
-        private void RescaleOnCrouch()
+        private void RePositionCameraOnCrouch()
         {
             if (!_isCrouching) return;
+            var cameraPivot = cameraController.CameraPivot;
             if (_isCrouchPressed)
             {
-                if (!Mathf.Approximately(transform.localScale.y, crouchBodyScale.y))
+                if (!Mathf.Approximately(cameraPivot.localPosition.y, crouchCameraPositionY))
                 {
-                    transform.localScale = Vector3.Lerp(transform.localScale, crouchBodyScale,
-                        (crouchBodyScale.y / transform.localScale.y * speedDeltaMultiplier) * Time.fixedDeltaTime);
+                    var crouchCameraPosition = cameraPivot.localPosition;
+                    crouchCameraPosition.y = crouchCameraPositionY;
+                    cameraPivot.localPosition = Vector3.Lerp(cameraPivot.localPosition, crouchCameraPosition,
+                        (crouchCameraPosition.y / cameraPivot.localPosition.y * speedDeltaMultiplier) * Time.deltaTime);
                 }
                 else
                 {
-                    transform.localScale = crouchBodyScale;
+                    var crouchCameraPosition = cameraPivot.localPosition;
+                    crouchCameraPosition.y = crouchCameraPositionY;
+                    cameraPivot.localPosition = crouchCameraPosition;
                     _isCrouching = false;
                 }
             }
             else
             {
-                if (!Mathf.Approximately(transform.localScale.y, _originalBodyScale.y))
+                if (!Mathf.Approximately(cameraPivot.localPosition.y, _originalCameraPositionY))
                 {
-                    transform.localScale = Vector3.Lerp(transform.localScale, _originalBodyScale,
-                        (_originalBodyScale.y / transform.localScale.y * speedDeltaMultiplier) * Time.fixedDeltaTime);
+                    var originalCameraPosition = cameraPivot.localPosition;
+                    originalCameraPosition.y = _originalCameraPositionY;
+                    cameraPivot.localPosition = Vector3.Lerp(cameraPivot.localPosition, originalCameraPosition,
+                        (_originalCameraPositionY / cameraPivot.localPosition.y * speedDeltaMultiplier) * Time.deltaTime);
                 }
                 else
                 {
-                    transform.localScale = _originalBodyScale;
+                    var originalCameraPosition = cameraPivot.localPosition;
+                    originalCameraPosition.y = _originalCameraPositionY;
+                    cameraPivot.localPosition = originalCameraPosition;
                     _isCrouching = false;
                 }
             }
@@ -300,6 +323,10 @@ namespace Character.Player
             if (!_isGrounded) return;
             if (_isSprintPressed) { _isSprintPressed = false; }
             _isCrouchPressed = !_isCrouchPressed; _isCrouching = true;
+            
+            animator.SetPlayerIsCrouch(_isCrouchPressed);
+            capsuleCollider.center = _isCrouchPressed ? capsuleCollider.center / 2 : capsuleCollider.center * 2;
+            capsuleCollider.height = _isCrouchPressed ? 1 : 2;
         }
 
         /// <summary>

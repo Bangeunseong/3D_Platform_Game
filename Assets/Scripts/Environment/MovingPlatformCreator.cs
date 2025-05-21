@@ -48,7 +48,7 @@ namespace Environment
             Platform.Init(_platform.transform.position, _platform.transform.position + Quaternion.Euler(spawnRotation) * Vector3.forward * ((distanceBetweenStairs / 2f - platformOffset.z) * 2f) , targetLayer, moveDelayTime, moveDuration);
         }
 
-        private void OnDrawGizmosSelected()
+        private void OnDrawGizmos()
         {
             var originalMatrix = Gizmos.matrix;
             Gizmos.matrix = Matrix4x4.TRS(spawnPosition, Quaternion.Euler(spawnRotation), Vector3.one);

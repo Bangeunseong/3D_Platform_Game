@@ -30,14 +30,7 @@ namespace Manager
         
         // Singleton
         private static InventoryManager _instance;
-        public static InventoryManager Instance
-        {
-            get
-            {
-                if (!_instance) _instance = new GameObject("InventoryManager").AddComponent<InventoryManager>();
-                return _instance;
-            }
-        }
+        public static InventoryManager Instance { get => _instance; private set => _instance = value; }
 
         private void Awake()
         {
