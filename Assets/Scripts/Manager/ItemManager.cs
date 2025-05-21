@@ -45,9 +45,6 @@ namespace Manager
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
                 itemTable = handle.Result;
-                var i = 0;
-                foreach(var key in itemTable.ItemNames) 
-                    Instantiate(itemTable.GetData(key).itemPrefab, new Vector3(-5f + i++ * 2 , 0.5f, 6f), Quaternion.identity);
                 Debug.Log("ItemTable Load Completed!");
             }
             else

@@ -27,13 +27,28 @@ namespace Item.Data___Table
         }
         
         /// <summary>
-        /// Get Item Data from Dictionary
+        /// Get Item Data from Dictionary by name
         /// </summary>
         /// <param name="itemName"></param>
         /// <returns>Returns ItemData referred to 'itemName'</returns>
-        public ItemData GetData(string itemName)
+        public ItemData GetItemByName(string itemName)
         {
             return dataDictionary.GetValueOrDefault(itemName);
+        }
+
+        /// <summary>
+        /// Get Item Data from Dictionary by index
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public ItemData GetItemByIndex(int index)
+        {
+            return dataDictionary[ItemNames[index]];
+        }
+        
+        public int GetItemCount()
+        {
+            return data.Count;
         }
     }
 }

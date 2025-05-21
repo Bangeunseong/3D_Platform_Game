@@ -1,7 +1,5 @@
-using System;
 using Environment;
 using Manager;
-using Unity.Cinemachine;
 using UnityEngine;
 using Utils.Interfaces;
 
@@ -47,6 +45,7 @@ namespace Character.Player
                 
                 interactableObject = hit.collider.gameObject;
                 if (!interactableObject.TryGetComponent<IInteractable>(out var interactable)) return;
+                if (interactable is ItemBox { IsOpened: true }) { interactableObject = null; return; }
                 Interactable = interactable;
                 _uiManager.ChangePromptText(Interactable.GetInteractPrompt());
             }
