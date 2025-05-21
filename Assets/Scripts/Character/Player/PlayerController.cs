@@ -33,7 +33,7 @@ namespace Character.Player
 
         [Header("CameraPivot Scale Settings")] 
         [SerializeField] private float crouchCameraPositionY = 1f;
-        private float _originalCameraPositionY = 1.5f;
+        [SerializeField] private float originalCameraPositionY = 1.5f;
         private bool _isCrouching;
         
         // Fields
@@ -222,17 +222,17 @@ namespace Character.Player
             }
             else
             {
-                if (!Mathf.Approximately(cameraPivot.localPosition.y, _originalCameraPositionY))
+                if (!Mathf.Approximately(cameraPivot.localPosition.y, originalCameraPositionY))
                 {
                     var originalCameraPosition = cameraPivot.localPosition;
-                    originalCameraPosition.y = _originalCameraPositionY;
+                    originalCameraPosition.y = originalCameraPositionY;
                     cameraPivot.localPosition = Vector3.Lerp(cameraPivot.localPosition, originalCameraPosition,
-                        (_originalCameraPositionY / cameraPivot.localPosition.y * speedDeltaMultiplier) * Time.deltaTime);
+                        (originalCameraPositionY / cameraPivot.localPosition.y * speedDeltaMultiplier) * Time.deltaTime);
                 }
                 else
                 {
                     var originalCameraPosition = cameraPivot.localPosition;
-                    originalCameraPosition.y = _originalCameraPositionY;
+                    originalCameraPosition.y = originalCameraPositionY;
                     cameraPivot.localPosition = originalCameraPosition;
                     _isCrouching = false;
                 }
@@ -311,7 +311,7 @@ namespace Character.Player
         /// </summary>
         public void OnSprint()
         {
-            if (_isCrouchPressed) { _isCrouchPressed = false; _isCrouching = false; }
+            if (_isCrouchPressed) { OnCrouch(); }
             _isSprintPressed = !_isSprintPressed;
         }
 
@@ -321,7 +321,7 @@ namespace Character.Player
         public void OnCrouch()
         {
             if (!_isGrounded) return;
-            if (_isSprintPressed) { _isSprintPressed = false; }
+            if (_isSprintPressed) { OnSprint(); }
             _isCrouchPressed = !_isCrouchPressed; _isCrouching = true;
             
             animator.SetPlayerIsCrouch(_isCrouchPressed);

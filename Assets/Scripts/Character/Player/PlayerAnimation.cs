@@ -40,7 +40,7 @@ namespace Character.Player
         }
         
         /// <summary>
-        /// Set Player Climb state (Climb, Idle)
+        /// Set Player Climb state (Climb, Idle) -> Does not have Animation Clip
         /// </summary>
         /// <param name="isClimbing"></param>
         public void SetPlayerIsClimbing(bool isClimbing)
