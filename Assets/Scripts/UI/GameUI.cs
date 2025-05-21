@@ -15,6 +15,7 @@ namespace UI
         [SerializeField] private Image staminaBar;
         [SerializeField] private Image damageIndicator;
         [SerializeField] private GameObject promptPanel;
+        [SerializeField] private GameObject climbablePrompt;
         [SerializeField] private TextMeshProUGUI promptText;
         [SerializeField] private Color flashColor;
         [SerializeField] private float flashSpeed;
@@ -45,6 +46,16 @@ namespace UI
         public void ClearPromptText()
         {
             promptPanel.SetActive(false);
+        }
+
+        public void ShowClimbablePrompt()
+        {
+            climbablePrompt.SetActive(true);
+        }
+        
+        public void HideClimbablePrompt()
+        {
+            climbablePrompt.SetActive(false);
         }
         
         public void Flash()

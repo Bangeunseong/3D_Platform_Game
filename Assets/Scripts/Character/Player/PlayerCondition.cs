@@ -27,7 +27,6 @@ namespace Character.Player
         
         [Header("Climbable Wall Settings")]
         [SerializeField] private LayerMask climbableWallLayer;
-        [SerializeField] private float lastCheckTime;
         [SerializeField] private float checkRate = 0.05f;
         
         // Fields
@@ -36,6 +35,8 @@ namespace Character.Player
         private Coroutine _doubleJumpCoroutine;
         private Coroutine _staminaInfiniteCoroutine;
         private UIManager _uiManager;
+        private bool _isPromptShown;
+        private float _lastCheckTime;
         
         // Properties
         public Condition Health => health;
@@ -67,10 +68,21 @@ namespace Character.Player
         
         private void Update()
         {
-            if (Time.time - lastCheckTime >= checkRate)
+            if (Time.time - _lastCheckTime >= checkRate)
             {
-                lastCheckTime = Time.time;
+                _lastCheckTime = Time.time;
                 isClimbable = IsContactedToClimbableWall();
+                
+                if(!IsClimbActive && isClimbable) 
+                {
+                    _uiManager.ShowClimbablePrompt();
+                    _isPromptShown = true;
+                }
+                else if(_isPromptShown) 
+                {
+                    _uiManager.HideClimbablePrompt();
+                    _isPromptShown = false;
+                }
             }
             
             if (timeSinceLastStaminaUse <= staminaRecoverDelayTime) { timeSinceLastStaminaUse += Time.deltaTime; }

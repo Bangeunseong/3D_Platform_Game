@@ -112,6 +112,22 @@ namespace Manager
         {
             gameUI.ClearPromptText();
         }
+
+        /// <summary>
+        /// Show Prompt when player approaches climbable wall
+        /// </summary>
+        public void ShowClimbablePrompt()
+        {
+            gameUI.ShowClimbablePrompt();
+        }
+
+        /// <summary>
+        /// Hide Prompt when player fars away from climbable wall
+        /// </summary>
+        public void HideClimbablePrompt()
+        {
+            gameUI.HideClimbablePrompt();
+        }
         
         /// <summary>
         /// Show FlashScreen when Player is damaged.

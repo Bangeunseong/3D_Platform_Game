@@ -46,8 +46,8 @@ namespace Character.Player
                 if (hit.collider.gameObject == interactableObject) return;
                 
                 interactableObject = hit.collider.gameObject;
-                Interactable = interactableObject.GetComponent<IInteractable>();
-                Debug.Log(Interactable.ToString());
+                if (!interactableObject.TryGetComponent<IInteractable>(out var interactable)) return;
+                Interactable = interactable;
                 _uiManager.ChangePromptText(Interactable.GetInteractPrompt());
             }
             else
