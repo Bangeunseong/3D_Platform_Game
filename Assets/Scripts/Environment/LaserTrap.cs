@@ -8,10 +8,6 @@ namespace Environment
     public class LaserTrap : MonoBehaviour
     {
         // Important Attributes
-        [Header("Spawn Settings")]
-        [SerializeField] private Vector3 spawnPosition;
-        [SerializeField] private Vector3 spawnRotation;
-        
         [Header("Laser and Platforms")]
         [SerializeField] private Transform laserPivot;
         [SerializeField] private Transform laserEndPoint;
@@ -41,6 +37,12 @@ namespace Environment
             if (!leftPlatform) {throw new MissingComponentException("Left Platform is missing!");}
             if (!rightPlatform) {throw new MissingComponentException("Right Platform is missing!");}
             if (targetLayer.value == 0) {throw new MissingComponentException("Target Layer is missing!");}
+        }
+
+        private void Start()
+        {
+            laser.SetPosition(0, laserPivot.position + laserPivot.forward / 2);
+            laser.SetPosition(1, laserEndPoint.position - laserEndPoint.forward / 2);
         }
 
         // Update is called once per frame
