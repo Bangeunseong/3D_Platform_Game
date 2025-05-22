@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Linq;
 using Character.Player.Camera;
+using Environment;
 using Manager;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -41,18 +42,23 @@ namespace Character.Player
         // Fields
         private Vector3 _velocity;
         private float _originalSpeed;
+        private float _launchOriginal;
         private bool _isGrounded = true;
         private bool _isOnJumpPad;
         private int _jumpCount;
+        private Vector3 _lastPosition;
         private Coroutine _cameraSwitchCoroutine;
         private Coroutine _consumeStaminaOnSprintCoroutine;
+        private Coroutine _cameraSwitchToObjectCoroutine;
         private UIManager _uiManager;
+        private Player _player;
         private PlayerState _playerState;
         
         // Player Input Checking Fields
         private bool _isJumpPressed; 
         private bool _isSprintPressed;
         private bool _isCrouchPressed;
+        private bool _isPlayerLaunched;
         
         // Properties
         public bool IsSprintPressed => _isSprintPressed;
@@ -72,8 +78,10 @@ namespace Character.Player
             
             _cam = UnityEngine.Camera.main;
             _originalSpeed = speed;
+            _launchOriginal = speed;
             _playerState = PlayerState.Idle;
             _uiManager = UIManager.Instance;
+            _player = CharacterManager.Instance.Player;
         }
 
         private void Update()
@@ -129,8 +137,12 @@ namespace Character.Player
 
             _isGrounded = IsGrounded_Method();
             animator.SetPlayerIsGrounded(_isGrounded);
-            
-            if (_isGrounded) { if(!_isOnJumpPad) { _velocity.y = 0f; _jumpCount = 0; } }
+
+            if (_isGrounded)
+            {
+                if(!_isOnJumpPad) { _velocity.y = -1f; _jumpCount = 0; }
+                if(_isPlayerLaunched){ _isPlayerLaunched = false; movementDirection = Vector2.zero; _originalSpeed = _launchOriginal; }
+            }
             else { _velocity.y += gravityValue * rigidBody.mass * Time.fixedDeltaTime; }
             
             if((_isJumpPressed && _isGrounded) || (condition.IsDoubleJumpEnabled && !_isGrounded && _isJumpPressed && _jumpCount < 2))
@@ -270,6 +282,37 @@ namespace Character.Player
         }
 
         /// <summary>
+        /// Change third person camera target to given transform.
+        /// This Method is made to use the cannon.
+        /// </summary>
+        /// <param name="targetTransform"></param>
+        public void ChangeCameraTargetToObject(Transform targetTransform)
+        {
+            CameraSwitchToObject(targetTransform);
+        }
+
+        /// <summary>
+        /// Launch Self with cannon.
+        /// </summary>
+        private void LaunchSelf()
+        {
+            var cannon = _player.Cannon;
+            if (!cannon) return;
+
+            transform.position = cannon.EndPoint.position;
+            CameraSwitchToObject(cameraController.CameraPivot);
+            var fireForce = new Vector3(0,cannon.FireDirection.y, cannon.FireDirection.z) * cannon.FireForce; 
+            movementDirection = new Vector2(0, fireForce.z);
+            _velocity.y += cannon.FireForce;
+            _originalSpeed = cannon.FireForce;
+            speed = cannon.FireForce;
+            
+            condition.IsInCannon = false;
+            _isPlayerLaunched = true;
+            _player.Cannon = null;
+        }
+
+        /// <summary>
         /// Coroutine that consumes stamina on sprint.
         /// </summary>
         /// <returns></returns>
@@ -307,6 +350,36 @@ namespace Character.Player
             _cameraSwitchCoroutine = null;
         }
 
+        /// <summary>
+        /// Coroutine that switches camera target between cannon and player.
+        /// </summary>
+        /// <param name="targetTransform"></param>
+        /// <returns></returns>
+        private void CameraSwitchToObject(Transform targetTransform)
+        {
+            if (!condition.IsInCannon)
+            {
+                condition.IsInCannon = true;
+                thirdPersonCamera.Target = new CameraTarget{ TrackingTarget = targetTransform };
+                thirdPersonCamera.Priority = 10;
+                firstPersonCamera.Priority = 0;
+                _cam.cullingMask &= ~(1 << gameObject.layer);
+            }
+            else
+            {
+                thirdPersonCamera.Target = new CameraTarget { TrackingTarget = cameraController.CameraPivot };
+                if (IsFirstPersonCameraOn)
+                {
+                    firstPersonCamera.Priority = 10;
+                    thirdPersonCamera.Priority = 0;
+                }
+                else
+                {
+                    _cam.cullingMask |= (1 << gameObject.layer);
+                }
+            }
+        }
+
         #region Player Input Methods
         
         /// <summary>
@@ -315,6 +388,7 @@ namespace Character.Player
         /// <param name="direction"></param>
         public void OnMove(Vector2 direction)
         {
+            if (condition.IsInCannon) { movementDirection = Vector2.zero; return; }
             movementDirection = direction;
         }
 
@@ -324,6 +398,7 @@ namespace Character.Player
         /// <param name="jump"></param>
         public void OnJump(bool jump)
         {
+            if (condition.IsInCannon) return;
             if (condition.IsClimbActive) { condition.IsClimbActive = false; condition.IsClimbable = false;  return; }
             if (condition.IsClimbable) { condition.IsClimbActive = true; return; }
             
@@ -341,6 +416,7 @@ namespace Character.Player
         /// </summary>
         public void OnSprint()
         {
+            if (condition.IsInCannon) return;
             if (_isCrouchPressed) { OnCrouch(); }
             _isSprintPressed = !_isSprintPressed;
         }
@@ -350,6 +426,7 @@ namespace Character.Player
         /// </summary>
         public void OnCrouch()
         {
+            if (condition.IsInCannon) return;
             if (!_isGrounded) return;
             if (_isSprintPressed) { OnSprint(); }
             _isCrouchPressed = !_isCrouchPressed; _isCrouching = true;
@@ -368,6 +445,12 @@ namespace Character.Player
             if (condition.IsInCannon) return;
             if(_cameraSwitchCoroutine != null) StopCoroutine(_cameraSwitchCoroutine);
             _cameraSwitchCoroutine = StartCoroutine(CameraSwitch_Coroutine());
+        }
+
+        public void OnAttack()
+        {
+            if (!condition.IsInCannon) return;
+            LaunchSelf();
         }
         
         #endregion

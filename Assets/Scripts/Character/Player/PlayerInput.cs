@@ -62,6 +62,7 @@ namespace Character.Player
         public void OnAttack(InputAction.CallbackContext context)
         {
             if (!_gameManager.IsGameActive || playerInteraction.IsInventoryOpen) return;
+            if (context.started) controller.OnAttack();
         }
 
         public void OnCrouch(InputAction.CallbackContext context)

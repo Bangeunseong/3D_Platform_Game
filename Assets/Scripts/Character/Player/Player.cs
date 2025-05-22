@@ -1,5 +1,6 @@
 using System;
 using Character.Player.Camera;
+using Environment;
 using Item.Data___Table;
 using UnityEngine;
 using UnityEngine.Events;
@@ -22,6 +23,7 @@ namespace Character.Player
         [SerializeField] private PlayerAnimation playerAnimation;
         [SerializeField] private Transform itemThrowTransform;
         [SerializeField] private ItemData itemData;
+        [SerializeField] private Cannon cannon;
 
         // Action Events
         [Header("Action Events")]
@@ -36,6 +38,7 @@ namespace Character.Player
         public PlayerAnimation PlayerAnimation => playerAnimation;
         public Transform ItemThrowTransform => itemThrowTransform;
         public ItemData ItemData { get => itemData; set => itemData = value; }
+        public Cannon Cannon{ get => cannon; set => cannon = value; }
         public UnityEvent AddItem => addItem;
         
         private void Awake()
