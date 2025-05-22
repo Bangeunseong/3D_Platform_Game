@@ -31,6 +31,8 @@ namespace Environment
             _moveDelayTime = delayTime;
             _moveDuration = duration;
             _player = CharacterManager.Instance.Player;
+            
+            StartCoroutine(MovePlatform(_startPosition, _endPosition));
         }
 
         private void Update()
@@ -50,31 +52,26 @@ namespace Environment
 
         private IEnumerator MovePlatform(Vector3 start, Vector3 end)
         {
-            yield return new WaitForSeconds(_moveDelayTime);
-            var elapsed = 0f;
-            while (elapsed < _moveDuration)
+            while (true)
             {
-                elapsed += Time.deltaTime;
-                var curvedT = Mathf.SmoothStep(0, 1, elapsed/_moveDuration);
-                transform.position = Vector3.Lerp(start, end, curvedT);
-                yield return null;
+                yield return new WaitForSeconds(_moveDelayTime);
+                var elapsed = 0f;
+                while (elapsed < _moveDuration)
+                {
+                    elapsed += Time.deltaTime;
+                    var curvedT = Mathf.SmoothStep(0, 1, elapsed / _moveDuration);
+                    transform.position = !_isReversed ? Vector3.Lerp(start, end, curvedT) : Vector3.Lerp(end, start, curvedT);
+                    yield return null;
+                }
+                transform.position = !_isReversed ? end : start;
+                _isReversed = !_isReversed;
             }
-
-            transform.position = end;
-            yield return new WaitForSeconds(_moveDelayTime);
-            _platformCoroutine = null;
         }
 
         private void OnCollisionStay(Collision other)
         {
             if ((1 << other.gameObject.layer) != _targetLayer.value) return;
-            if (_platformCoroutine != null) return;
             _isPlayerOnPlatform = true;
-            
-            _platformCoroutine = StartCoroutine(!_isReversed ? 
-                MovePlatform(_startPosition, _endPosition) : 
-                MovePlatform(_endPosition, _startPosition));
-            _isReversed = !_isReversed;
         }
 
         private void OnCollisionExit(Collision other)

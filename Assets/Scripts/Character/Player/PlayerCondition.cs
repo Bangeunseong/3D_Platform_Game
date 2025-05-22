@@ -96,7 +96,7 @@ namespace Character.Player
         {
             var rays = new[]
             {
-                new Ray(transform.position + new Vector3(0, 1f), Vector3.forward),
+                new Ray(transform.position + new Vector3(0, 1f), transform.forward),
             };
             
             return rays.Any(ray => Physics.Raycast(ray, 1f, climbableWallLayer));
@@ -198,6 +198,11 @@ namespace Character.Player
         {
             Debug.Log("Player is dead!");
             OnDeath?.Invoke();
+        }
+
+        private void OnDrawGizmos()
+        {
+            
         }
     }
 }

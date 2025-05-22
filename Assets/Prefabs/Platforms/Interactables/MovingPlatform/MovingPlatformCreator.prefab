@@ -53,5 +53,5 @@ MonoBehaviour:
   targetLayer:
     serializedVersion: 2
     m_Bits: 128
-  moveDelayTime: 1
+  moveDelayTime: 2
   moveDuration: 2

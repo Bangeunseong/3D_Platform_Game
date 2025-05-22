@@ -52,7 +52,7 @@ namespace Environment
             {
                 elapsed += Time.deltaTime;
                 var curvedT = Mathf.SmoothStep(0, 1, elapsed/openDuration);
-                chestDoor.transform.rotation = Quaternion.Euler(Vector3.Lerp(chestDoor.transform.rotation.eulerAngles, openRotation, curvedT));
+                chestDoor.transform.localRotation = Quaternion.Euler(Vector3.Lerp(chestDoor.transform.localRotation.eulerAngles, openRotation, curvedT));
                 yield return null;
             }
             

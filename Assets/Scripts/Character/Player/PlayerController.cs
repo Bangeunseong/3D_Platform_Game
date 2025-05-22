@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Linq;
 using Character.Player.Camera;
-using Environment;
 using Manager;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -176,7 +175,20 @@ namespace Character.Player
 
         private bool RayCastWall(out RaycastHit hit)
         {
-            return Physics.Raycast(transform.position, transform.forward, out hit, 0.8f, condition.ClimbableWallLayer);
+            var rays = new[]
+            {
+                new Ray(transform.position, transform.forward),
+                new Ray(transform.position + Vector3.up * 0.5f, transform.forward),
+                new Ray(transform.position + Vector3.up * 1.5f, transform.forward),
+                new Ray(transform.position + Vector3.up * 2f, transform.forward),
+            };
+            foreach (var ray in rays)
+            {
+                if (Physics.Raycast(ray, out hit, 0.8f, condition.ClimbableWallLayer)) return true;
+            }
+
+            hit = default;
+            return false;
         }
         
         /// <summary>
