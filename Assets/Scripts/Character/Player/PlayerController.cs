@@ -192,12 +192,14 @@ namespace Character.Player
         }
         
         /// <summary>
-        /// Check if player is grounded.
+        /// Check if Player is grounded.
         /// </summary>
         /// <returns></returns>
         private bool IsGrounded_Method()
         {
-            var ray = new[]
+            return Physics.CheckSphere(transform.position + (transform.up * 0.25f), 0.35f, groundLayer);
+            
+            /*var ray = new[]
             {
                 new Ray(transform.position + (transform.forward * 0.2f) + (transform.up * 0.05f), Vector3.down),
                 new Ray(transform.position + (-transform.forward * 0.2f) + (transform.up * 0.05f), Vector3.down),
@@ -205,7 +207,7 @@ namespace Character.Player
                 new Ray(transform.position + (-transform.right * 0.2f) + (transform.up * 0.05f), Vector3.down),
             };
 
-            return ray.Any(t => Physics.Raycast(t, 0.1f, groundLayer));
+            return ray.Any(t => Physics.Raycast(t, 0.1f, groundLayer));*/
         }
 
         /// <summary>
@@ -390,6 +392,12 @@ namespace Character.Player
                     _cam.cullingMask |= (1 << gameObject.layer);
                 }
             }
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position + (transform.up * 0.25f), 0.35f);
         }
 
         #region Player Input Methods
