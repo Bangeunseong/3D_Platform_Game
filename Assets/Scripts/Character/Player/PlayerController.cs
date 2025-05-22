@@ -68,7 +68,7 @@ namespace Character.Player
             if (!rigidBody) rigidBody = Helper.GetComponent_Helper<Rigidbody>(gameObject);
             if (!capsuleCollider) capsuleCollider = Helper.GetComponent_Helper<CapsuleCollider>(gameObject);
         }
-
+        
         private void Start()
         {
             condition = CharacterManager.Instance.Player.Condition;

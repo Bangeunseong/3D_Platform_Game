@@ -96,10 +96,17 @@ namespace Character.Player
         {
             var rays = new[]
             {
-                new Ray(transform.position + new Vector3(0, 1f), transform.forward),
+                new Ray(transform.position, transform.forward),
+                new Ray(transform.position + Vector3.up * 0.5f, transform.forward),
+                new Ray(transform.position + Vector3.up * 1.5f, transform.forward),
+                new Ray(transform.position + Vector3.up * 2f, transform.forward),
             };
-            
-            return rays.Any(ray => Physics.Raycast(ray, 1f, climbableWallLayer));
+            foreach (var ray in rays)
+            {
+                if (Physics.Raycast(ray,0.8f, ClimbableWallLayer)) return true;
+            }
+
+            return false;
         }
 
         public void OnPhysicalDamage(float damage)
@@ -198,11 +205,6 @@ namespace Character.Player
         {
             Debug.Log("Player is dead!");
             OnDeath?.Invoke();
-        }
-
-        private void OnDrawGizmos()
-        {
-            
         }
     }
 }
