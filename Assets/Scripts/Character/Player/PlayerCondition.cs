@@ -24,6 +24,8 @@ namespace Character.Player
         [SerializeField] private bool isStaminaInfinite;
         [SerializeField] private bool isDoubleJumpEnabled;
         [SerializeField] private bool isClimbable;
+        [SerializeField] private bool isClimbActive;
+        [SerializeField] private bool isInCannon;
         
         [Header("Climbable Wall Settings")]
         [SerializeField] private LayerMask climbableWallLayer;
@@ -44,7 +46,8 @@ namespace Character.Player
         public bool IsDoubleJumpEnabled => isDoubleJumpEnabled;
         public LayerMask ClimbableWallLayer => climbableWallLayer;
         public bool IsClimbable { get => isClimbable; set => isClimbable = value; }
-        public bool IsClimbActive { get; set; }
+        public bool IsClimbActive { get => isClimbActive; set => isClimbActive = value; }
+        public bool IsInCannon { get => isInCannon; set => isInCannon = value; }
 
         // Action Events
         [CanBeNull] public event Action OnDamage, OnDeath;

@@ -9,6 +9,8 @@ using Utils.Common;
 
 namespace Character.Player
 {
+    public enum PlayerState { Idle, Walk, Run, Crouch, }
+    
     public class PlayerController : MonoBehaviour
     {
         [Header("Components")]
@@ -44,6 +46,8 @@ namespace Character.Player
         private int _jumpCount;
         private Coroutine _cameraSwitchCoroutine;
         private Coroutine _consumeStaminaOnSprintCoroutine;
+        private UIManager _uiManager;
+        private PlayerState _playerState;
         
         // Player Input Checking Fields
         private bool _isJumpPressed; 
@@ -68,6 +72,8 @@ namespace Character.Player
             
             _cam = UnityEngine.Camera.main;
             _originalSpeed = speed;
+            _playerState = PlayerState.Idle;
+            _uiManager = UIManager.Instance;
         }
 
         private void Update()
@@ -89,6 +95,29 @@ namespace Character.Player
         private void LateUpdate()
         {
             RePositionCameraOnCrouch();
+        }
+
+        private void ChangeState(PlayerState state)
+        {
+            if (_playerState == state) return;
+            _playerState = state;
+            switch (state)
+            {
+                case PlayerState.Idle:
+                    _uiManager.ChangePlayerStateIcon(PlayerState.Idle);
+                    break;
+                case PlayerState.Walk:
+                    _uiManager.ChangePlayerStateIcon(PlayerState.Walk);
+                    break;
+                case PlayerState.Run:
+                    _uiManager.ChangePlayerStateIcon(PlayerState.Run);
+                    break;
+                case PlayerState.Crouch:
+                    _uiManager.ChangePlayerStateIcon(PlayerState.Crouch);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(state), state, null);
+            }
         }
 
         /// <summary>
@@ -113,7 +142,6 @@ namespace Character.Player
             }
             
             var totalVelocity = move + _velocity;
-            
             rigidBody.linearVelocity = totalVelocity;
         }
 
@@ -172,7 +200,9 @@ namespace Character.Player
                 Mathf.Lerp(speed, _originalSpeed,  speed / _originalSpeed * speedDeltaMultiplier * Time.fixedDeltaTime) : _originalSpeed;
             
             var velocityXZ = (transform.forward * movementDirection.y + transform.right * movementDirection.x).normalized * speed;
-            animator.SetPlayerSpeed(velocityXZ.magnitude / 10f);
+            var magnitude = velocityXZ.magnitude / 10f;
+            animator.SetPlayerSpeed(magnitude);
+            if(!_isCrouchPressed) ChangeState(magnitude < 0.1f ? PlayerState.Idle : magnitude < 0.65f ? PlayerState.Walk : PlayerState.Run);
             return velocityXZ;
         }
 
@@ -325,6 +355,7 @@ namespace Character.Player
             _isCrouchPressed = !_isCrouchPressed; _isCrouching = true;
             
             animator.SetPlayerIsCrouch(_isCrouchPressed);
+            if(_isCrouchPressed) ChangeState(PlayerState.Crouch);
             capsuleCollider.center = _isCrouchPressed ? capsuleCollider.center / 2 : capsuleCollider.center * 2;
             capsuleCollider.height = _isCrouchPressed ? 1 : 2;
         }
@@ -334,6 +365,7 @@ namespace Character.Player
         /// </summary>
         public void OnSwitchCamera()
         {
+            if (condition.IsInCannon) return;
             if(_cameraSwitchCoroutine != null) StopCoroutine(_cameraSwitchCoroutine);
             _cameraSwitchCoroutine = StartCoroutine(CameraSwitch_Coroutine());
         }

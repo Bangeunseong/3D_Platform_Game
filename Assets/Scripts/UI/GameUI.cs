@@ -11,14 +11,19 @@ namespace UI
 {
     public class GameUI : BaseUI
     {
+        [Header("UI Components")]
         [SerializeField] private Image hpBar;
         [SerializeField] private Image staminaBar;
         [SerializeField] private Image damageIndicator;
+        [SerializeField] private Image playerStateIcon;
         [SerializeField] private GameObject promptPanel;
         [SerializeField] private GameObject climbablePrompt;
         [SerializeField] private TextMeshProUGUI promptText;
         [SerializeField] private Color flashColor;
         [SerializeField] private float flashSpeed;
+        
+        [Header("Player State Icon Sprites")]
+        [SerializeField] private Sprite[] playerStateSprites;
     
         private Coroutine _coroutine;
         
@@ -36,7 +41,12 @@ namespace UI
         {
             staminaBar.fillAmount = currentStamina;
         }
-
+        
+        public void ChangeStateIcon(PlayerState state)
+        {
+            playerStateIcon.sprite = playerStateSprites[(int) state];
+        }
+        
         public void SetPromptText(string text)
         {
             promptPanel.SetActive(true);

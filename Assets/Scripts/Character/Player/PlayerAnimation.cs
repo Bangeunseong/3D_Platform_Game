@@ -1,4 +1,5 @@
 using System;
+using Manager;
 using UnityEngine;
 using Utils.Common;
 
@@ -14,6 +15,7 @@ namespace Character.Player
         private static readonly int IsCrouch = Animator.StringToHash("IsCrouch_b");
         
         // Components
+        [Header("Components")]
         [SerializeField] private Animator animator;
 
         private void Awake()
@@ -55,6 +57,7 @@ namespace Character.Player
         public void SetPlayerIsCrouch(bool isCrouch)
         {
             animator.SetBool(IsCrouch, isCrouch);
+            
         }
         
         /// <summary>

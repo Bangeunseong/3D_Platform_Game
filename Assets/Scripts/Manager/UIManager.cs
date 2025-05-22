@@ -1,3 +1,4 @@
+using Character.Player;
 using UI;
 using UnityEngine;
 using Utils.Common;
@@ -94,6 +95,11 @@ namespace Manager
         public void ChangeStaminaBar(float currentStamina)
         {
             gameUI.SetStaminaBar(currentStamina);
+        }
+
+        public void ChangePlayerStateIcon(PlayerState state)
+        {
+            gameUI.ChangeStateIcon(state);
         }
 
         /// <summary>
