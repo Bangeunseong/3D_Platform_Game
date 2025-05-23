@@ -69,13 +69,12 @@ namespace Character.Player
         {
             IsInventoryOpen = !IsInventoryOpen;
             _uiManager.InventoryUI.ToggleInventoryWindow();
-            ToggleCursor();
+            ToggleCursor(IsInventoryOpen);
         }
         
-        private void ToggleCursor()
+        private void ToggleCursor(bool isInventoryOpen)
         {
-            var isCursorLocked = Cursor.lockState == CursorLockMode.Locked;
-            Cursor.lockState = isCursorLocked ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.lockState = isInventoryOpen ? CursorLockMode.None : CursorLockMode.Locked;
         }
     }
 }

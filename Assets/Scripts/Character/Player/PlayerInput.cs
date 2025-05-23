@@ -89,7 +89,11 @@ namespace Character.Player
         public void OnPause(InputAction.CallbackContext context)
         {
             if (!_gameManager.IsGameActive) return;
-            if (context.started) _gameManager.PauseGame();
+            if (context.started)
+            {
+                if(playerInteraction.IsInventoryOpen) playerInteraction.OnInventory(); 
+                _gameManager.PauseGame();
+            }
         }
         
         #endregion
