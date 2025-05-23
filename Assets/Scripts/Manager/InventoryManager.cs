@@ -29,13 +29,15 @@ namespace Manager
         public ItemData SelectedItem => selectedItem;
         
         // Singleton
-        private static InventoryManager _instance;
-        public static InventoryManager Instance { get => _instance; private set => _instance = value; }
+        public static InventoryManager Instance { get; private set; }
 
         private void Awake()
         {
-            if(!_instance){ _instance = this; DontDestroyOnLoad(gameObject); }
-            else { if(_instance != this) Destroy(gameObject); }
+            if (!Instance)
+            {
+                Instance = this; DontDestroyOnLoad(gameObject);
+            }
+            else { if(Instance != this) Destroy(gameObject); }
         }
 
         private void Start()

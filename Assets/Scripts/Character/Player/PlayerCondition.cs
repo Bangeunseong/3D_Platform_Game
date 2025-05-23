@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Linq;
 using Item.Data___Table;
 using JetBrains.Annotations;
 using Manager;
@@ -51,7 +50,7 @@ namespace Character.Player
 
         // Action Events
         [CanBeNull] public event Action OnDamage, OnDeath;
-
+        
         private void Awake()
         {
             health = new GameObject("Health").AddComponent<Condition>();

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using Item.Data___Table;
 using UnityEngine;
@@ -13,30 +12,21 @@ namespace Manager
         [SerializeField] private AssetLabelReference itemTableLabel;
             
         // Singleton
-        private static ItemManager _instance;
-        public static ItemManager Instance
-        {
-            get
-            {
-                if(!_instance) 
-                    _instance = new GameObject(nameof(ItemManager)).AddComponent<ItemManager>(); 
-                return _instance;
-            }
-        }
+        public static ItemManager Instance { get; private set; }
             
         // Properties
         public ItemTable ItemTable => itemTable;
             
         private void Awake()
         {
-            if (!_instance)
+            if (!Instance)
             {
-                _instance = this;
+                Instance = this;
                 itemTableLabel = new AssetLabelReference { labelString = "ItemTable" };
                 StartCoroutine(LoadItemTable_Coroutine());
                 DontDestroyOnLoad(gameObject);
             } 
-            else { if(_instance != this) Destroy(gameObject); }
+            else { if (Instance != this) Destroy(gameObject); }
         }
 
         private IEnumerator LoadItemTable_Coroutine()

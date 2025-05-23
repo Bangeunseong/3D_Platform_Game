@@ -1,5 +1,3 @@
-using System;
-using UI;
 using UnityEngine;
 
 namespace Manager
@@ -16,20 +14,15 @@ namespace Manager
         public bool IsGamePaused { get; private set; }
         
         // Singleton
-        private static GameManager _instance;
-        public static GameManager Instance
-        {
-            get
-            {
-                if (!_instance) _instance = new GameObject("GameManager").AddComponent<GameManager>();
-                return _instance;
-            }
-        }
+        public static GameManager Instance { get; private set; }
 
         private void Awake()
         {
-            if(!_instance){_instance = this; DontDestroyOnLoad(gameObject);}
-            else { if(_instance != this) Destroy(gameObject);}
+            if (!Instance)
+            {
+                Instance = this; DontDestroyOnLoad(gameObject);
+            }
+            else { if (Instance != this) Destroy(gameObject); }
         }
 
         private void Start()

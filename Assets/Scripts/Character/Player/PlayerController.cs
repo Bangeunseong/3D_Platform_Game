@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Linq;
 using Character.Player.Camera;
 using Manager;
 using Unity.Cinemachine;
@@ -21,7 +20,6 @@ namespace Character.Player
         [SerializeField] private CapsuleCollider capsuleCollider;
         [SerializeField] private CinemachineCamera firstPersonCamera;
         [SerializeField] private CinemachineCamera thirdPersonCamera;
-        private UnityEngine.Camera _cam;
         
         [Header("Movement Settings")]
         [SerializeField] private float speed;
@@ -32,25 +30,34 @@ namespace Character.Player
         [SerializeField] private float jumpForce = 15f;
         [SerializeField] private float gravityValue = -9.81f;
         [SerializeField] private LayerMask groundLayer;
+        [SerializeField] private float footStepThreshold = 0.1f;
+        [SerializeField] private float footStepRate = 0.5f;
 
         [Header("CameraPivot Scale Settings")] 
         [SerializeField] private float crouchCameraPositionY = 1f;
         [SerializeField] private float originalCameraPositionY = 1.5f;
         private bool _isCrouching;
         
-        // Fields
-        private Vector3 _velocity;
-        private float _originalSpeed;
-        private float _launchOriginal;
-        private bool _isGrounded = true;
-        private bool _isOnJumpPad;
-        private int _jumpCount;
-        private Vector3 _lastPosition;
+        // Component and Coroutine Fields
         private Coroutine _cameraSwitchCoroutine;
         private Coroutine _consumeStaminaOnSprintCoroutine;
         private Coroutine _cameraSwitchToObjectCoroutine;
         private UIManager _uiManager;
+        private AudioManager _audioManager;
         private Player _player;
+        private UnityEngine.Camera _cam;
+        
+        // Movement Physics Fields
+        private Vector3 _velocity;
+        private Vector3 _lastPosition;
+        private float _originalSpeed;
+        private float _launchOriginal;
+        private float _footStepTime;
+        private int _jumpCount;
+        
+        // Player State Fields
+        private bool _isGrounded = true;
+        private bool _isOnJumpPad;
         private PlayerState _playerState;
         
         // Player Input Checking Fields
@@ -80,6 +87,7 @@ namespace Character.Player
             _launchOriginal = speed;
             _playerState = PlayerState.Idle;
             _uiManager = UIManager.Instance;
+            _audioManager = AudioManager.Instance;
             _player = CharacterManager.Instance.Player;
         }
 
@@ -91,6 +99,14 @@ namespace Character.Player
                  if(_consumeStaminaOnSprintCoroutine != null) StopCoroutine(_consumeStaminaOnSprintCoroutine);
                 _consumeStaminaOnSprintCoroutine = null;
             }
+
+            if (!_isGrounded) return;
+            if (condition.IsClimbActive) return;
+            var velocity = new Vector3(rigidBody.linearVelocity.z, 0, rigidBody.linearVelocity.x);
+            if (!(velocity.magnitude > footStepThreshold)) return;
+            if (!(Time.time - _footStepTime > footStepRate)) return;
+            _footStepTime = Time.time;
+            _audioManager.PlayRandomFootStep();
         }
 
         private void FixedUpdate()
@@ -115,12 +131,15 @@ namespace Character.Player
                     break;
                 case PlayerState.Walk:
                     _uiManager.ChangePlayerStateIcon(PlayerState.Walk);
+                    footStepRate = 0.8f;
                     break;
                 case PlayerState.Run:
                     _uiManager.ChangePlayerStateIcon(PlayerState.Run);
+                    footStepRate = 0.4f;
                     break;
                 case PlayerState.Crouch:
                     _uiManager.ChangePlayerStateIcon(PlayerState.Crouch);
+                    footStepRate = 1.2f;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(state), state, null);
@@ -128,7 +147,7 @@ namespace Character.Player
         }
 
         /// <summary>
-        /// Calcualate player movement.
+        /// Calculate player movement.
         /// </summary>
         private void CalculateMovement()
         {
@@ -192,7 +211,7 @@ namespace Character.Player
         }
         
         /// <summary>
-        /// Check if Player is grounded.
+        /// Check if the player is grounded.
         /// </summary>
         /// <returns></returns>
         private bool IsGrounded_Method()
@@ -233,7 +252,7 @@ namespace Character.Player
         }
 
         /// <summary>
-        /// Method that will be called when player enters and stays in Jump Pad.
+        /// Method that will be called when the player enters and stays in Jump Pad.
         /// </summary>
         /// <param name="force"></param>
         public void EnteredInJumpPad(float force)
@@ -245,7 +264,7 @@ namespace Character.Player
         }
 
         /// <summary>
-        /// Method that will be called when player leaves Jump Pad.
+        /// Method that will be called when the player leaves Jump Pad.
         /// </summary>
         public void ExitedFromJumpPad()
         {
@@ -296,7 +315,7 @@ namespace Character.Player
         }
 
         /// <summary>
-        /// Change third person camera target to given transform.
+        /// Change a third-person camera target to given transform.
         /// This Method is made to use the cannon.
         /// </summary>
         /// <param name="targetTransform"></param>
@@ -458,7 +477,7 @@ namespace Character.Player
         }
 
         /// <summary>
-        /// PlayerInput will change type of camera by invoking this method
+        /// PlayerInput will change a type of camera by invoking this method
         /// </summary>
         public void OnSwitchCamera()
         {

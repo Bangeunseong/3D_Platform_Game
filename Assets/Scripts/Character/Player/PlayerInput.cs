@@ -1,10 +1,7 @@
-using System;
 using Character.Player.Camera;
 using Manager;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Utils;
-using Utils.Common;
 
 namespace Character.Player
 {

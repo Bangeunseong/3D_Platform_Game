@@ -1,10 +1,8 @@
-using System;
 using Character.Player.Camera;
 using Environment;
 using Item.Data___Table;
 using UnityEngine;
 using UnityEngine.Events;
-using Utils;
 using Utils.Common;
 
 namespace Character.Player
