@@ -43,7 +43,7 @@ namespace Manager
 
         public void PauseGame()
         {
-            IsGamePaused = true; 
+            IsGameActive = false; 
             _uiManager.SetGamePause();
             Cursor.lockState = CursorLockMode.None;
         }

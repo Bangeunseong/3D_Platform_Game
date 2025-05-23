@@ -38,6 +38,10 @@ namespace Manager
         private ObjectPool<FootStepPlayer> _footStepPlayerPool;
         private Player _player;
         
+        // Properties
+        public float BackgroundMusicVolume => backgroundMusicVolume;
+        public float SfxVolume => footStepVolume;
+        
         // Singleton
         public static AudioManager Instance { get; private set; }
 
@@ -105,6 +109,17 @@ namespace Manager
             if (!isAudioClipsLoaded) return;
             var player = _footStepPlayerPool.Get();
             player.Play(footStepClips[Random.Range(0, footStepClips.Count)], footStepVolume);
+        }
+
+        public void ChangeMusicVolume(float volume)
+        {
+            backgroundMusicVolume = volume;
+            audioSource.volume = backgroundMusicVolume;
+        }
+
+        public void ChangeSfxVolume(float volume)
+        {
+            footStepVolume = volume;
         }
 
         private IEnumerator LoadBackgroundMusic_Coroutine()
