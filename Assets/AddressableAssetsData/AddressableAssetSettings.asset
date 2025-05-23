@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 7306cfa8c5071ef4f9c64aea2ae458db
   m_currentHash:
     serializedVersion: 2
-    Hash: 2fc5b7fe8af422a897b59dabe0bb71c1
+    Hash: 50ff06e01b754e172f0daf2b2a197479
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_CatalogRequestsTimeout: 0
@@ -100,6 +100,8 @@ MonoBehaviour:
     m_LabelNames:
     - default
     - ItemTable
+    - BGM
+    - FootStep
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: bddcec1fcfd0fe843bee7f9681aaca5e, type: 2}

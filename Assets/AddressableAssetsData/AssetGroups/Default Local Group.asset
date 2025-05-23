@@ -21,6 +21,47 @@ MonoBehaviour:
     m_SerializedLabels:
     - ItemTable
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 18f1ff003e8fbdb44aba8266f6e1d168
+    m_Address: Assets/Artworks/Externals/Footstep(Snow and Grass)/Stepssingle sound/grass/Grass1
+      1-Audio.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - FootStep
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2f96d3d47551ed848be9307342dcd667
+    m_Address: Assets/Artworks/Externals/Footstep(Snow and Grass)/Stepssingle sound/grass/Grass1
+      3-Audio.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - FootStep
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4901040e735fd2547870b06a27124c49
+    m_Address: Assets/Artworks/Externals/Footstep(Snow and Grass)/Stepssingle sound/grass/Grass1
+      4-Audio.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - FootStep
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4dcd8f2dc477f5e4aa277ee503048ee8
+    m_Address: Assets/Artworks/Externals/Footstep(Snow and Grass)/Stepssingle sound/grass/Grass1
+      5-Audio.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - FootStep
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 59cd085e234f32e4daddd2e589174a96
+    m_Address: Assets/Artworks/Externals/Footstep(Snow and Grass)/Stepssingle sound/grass/Grass1
+      2-Audio.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - FootStep
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ff94d5cc0af7b4146894c4850047c72e
+    m_Address: Assets/Artworks/Externals/Fantasy Battle Music Free Pack/Loop 1 Tension.ogg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - BGM
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: a1cb31ad9ae534c4c818e2c0de9533f1, type: 2}
   m_SchemaSet:
