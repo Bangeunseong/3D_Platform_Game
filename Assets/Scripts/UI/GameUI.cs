@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using Character.Player;
-using Manager;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

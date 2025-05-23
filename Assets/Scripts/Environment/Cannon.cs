@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using Character.Player;
 using Character.Player.Camera;
 using Manager;

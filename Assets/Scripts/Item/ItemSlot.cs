@@ -1,4 +1,3 @@
-using System;
 using Item.Data___Table;
 using Manager;
 using TMPro;

@@ -16,7 +16,7 @@ namespace Character.Player.Camera
 
         private Player _player;
         private PlayerCondition _playerCondition;
-        private float _cameraYaw = 0f;
+        private float _cameraYaw;
         
         public Transform CameraPivot => cameraPivot;
 
